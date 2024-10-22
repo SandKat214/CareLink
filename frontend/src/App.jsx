@@ -18,7 +18,10 @@ const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path='/' element={<RootLayout />}>
 			<Route index element={<Home />} />
-			<Route path='patients' element={<PatientsLayout />}>
+			<Route
+				path='patients'
+				element={<PatientsLayout />}
+			>
 				<Route index element={<Patients />} />
 				<Route path=':patientId' element={<PatientDetails />} />
 			</Route>

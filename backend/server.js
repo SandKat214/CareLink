@@ -1,6 +1,7 @@
 require("dotenv").config()
 
 const express = require("express")
+const cors = require("cors")
 const mongoose = require("mongoose")
 const patientRoutes = require("./routes/patientRoutes")
 const recordRoutes = require("./routes/recordRoutes")
@@ -10,6 +11,7 @@ const app = express()
 const PORT = process.env.PORT
 
 // middleware
+app.use(cors({ credentials: true, origin: ["http://localhost:4000"] }))
 app.use(express.json())
 app.use((req, res, next) => {
 	console.log(req.path, req.method)

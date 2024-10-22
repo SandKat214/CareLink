@@ -6,43 +6,68 @@ import {
 	Icon,
 	Input,
 	InputGroup,
-	InputRightElement,
+	InputLeftElement,
 	Link,
 	List,
 	ListItem,
+	Spinner,
 	Tooltip,
+	useToast,
 	VStack,
 } from "@chakra-ui/react"
 import { NavLink, Outlet } from "react-router-dom"
 import "@fontsource/lalezar"
-
-import { patients } from "../utils/mockup"
+import axios from "axios"
+import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 
 // icons
 import { IoIosSearch } from "react-icons/io"
 import { MdAdd } from "react-icons/md"
 
 const PatientsLayout = () => {
-	const patientList = patients.map((patient) => {
-		return (
-			<ListItem key={patient._id}>
-				<Tooltip
-					hasArrow
-					label='Go to patient page'
-					fontSize='12px'
-					placement='auto'
-					mx='10px'
-				>
-					<Link
-						as={NavLink}
-						to={"/patients/" + patient._id}
-						variant='patient'
-					>
-						{patient.lname}, {patient.fname}
-					</Link>
-				</Tooltip>
-			</ListItem>
-		)
+	const toast = useToast()
+	const [searchValue, setSearchValue] = useState("")
+	const [patients, setPatients] = useState([])
+
+	// Fetch patients from db
+	const { isLoading } = useQuery({
+		queryKey: [searchValue],
+		queryFn: async () => {
+			// if value typed in search bar, fetch matching
+			try {
+				if (searchValue) {
+					const res = await axios.get(
+						import.meta.env.VITE_PATIENT_API +
+							"patients/search/" +
+							searchValue
+					)
+					setPatients(res.data)
+					return res.data
+				}
+
+				// otherwise fetch all patient
+				const res = await axios.get(
+					import.meta.env.VITE_PATIENT_API + "patients"
+				)
+				setPatients(res.data)
+				return res.data
+			} catch (error) {
+				toast({
+					description: "Error fetching patients from server.",
+					status: "error",
+				})
+				console.error(error)
+				return error
+			}
+		},
+		onError: () => {
+			toast({
+				description: "Error fetching patients from server.",
+				status: "error",
+			})
+			console.error(error)
+		},
 	})
 
 	return (
@@ -72,12 +97,14 @@ const PatientsLayout = () => {
 							<Input
 								type='search'
 								placeholder='Search by name...'
+								value={searchValue}
+								onChange={(e) => setSearchValue(e.target.value)}
 								variant='searchP'
 								fontSize='12px'
 							/>
-							<InputRightElement>
+							<InputLeftElement>
 								<IoIosSearch />
-							</InputRightElement>
+							</InputLeftElement>
 						</InputGroup>
 					</Tooltip>
 				</Center>
@@ -90,7 +117,43 @@ const PatientsLayout = () => {
 					boxShadow='inset 2px 2px 10px #343434'
 					flexGrow={1}
 				>
-					<List spacing='15px'>{patientList}</List>
+					{isLoading ? (
+						<Center h='100%' w='100%'>
+							<Spinner color='dkGreen' size='xl' />
+						</Center>
+					) : (
+						<List spacing='15px'>
+							{patients.length > 0 ? (
+								patients.map((patient) => {
+									return (
+										<ListItem key={patient._id}>
+											<Tooltip
+												hasArrow
+												label='Go to patient page'
+												fontSize='12px'
+												placement='auto'
+												mx='10px'
+											>
+												<Link
+													as={NavLink}
+													to={
+														"/patients/" +
+														patient._id
+													}
+													variant='patient'
+												>
+													{patient.lname},{" "}
+													{patient.fname}
+												</Link>
+											</Tooltip>
+										</ListItem>
+									)
+								})
+							) : (
+								<ListItem>No matching patients</ListItem>
+							)}
+						</List>
+					)}
 				</VStack>
 				<Flex
 					as='footer'

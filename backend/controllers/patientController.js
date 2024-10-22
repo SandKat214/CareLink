@@ -44,6 +44,29 @@ const getPatient = async (req, res) => {
 	}
 }
 
+// GET patients by search query
+const getPatientsQ = async (req, res) => {
+	const { q } = req.params
+	const regex = new RegExp(q, "i")
+	console.log(regex)
+
+	try {
+		const patients = await Patient.find({
+			$or: [
+				{ fname: regex },
+				{ lname: regex }
+			]
+		})
+		console.log("Matching patients retrieved from the db.")
+		res.status(200).json(patients)
+	} catch (error) {
+		console.log(error.message)
+		res.status(400).json({
+			error: "Invalid request from client for matching patients.",
+		})
+	}
+}
+
 // CREATE a new patient
 const createPatient = async (req, res) => {
 	try {
@@ -128,6 +151,7 @@ const updatePatient = async (req, res) => {
 module.exports = {
 	getPatients,
 	getPatient,
+	getPatientsQ,
 	createPatient,
 	deletePatient,
 	updatePatient,

@@ -2,6 +2,7 @@ const express = require("express")
 const {
 	getPatients,
 	getPatient,
+	getPatientsQ,
 	createPatient,
 	deletePatient,
 	updatePatient,
@@ -14,6 +15,9 @@ router.get("/", getPatients)
 
 // GET a single patient
 router.get("/:id", getPatient)
+
+// GET by search value
+router.get("/search/:q", getPatientsQ)
 
 // POST a new workout
 router.post("/", createPatient)

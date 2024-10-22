@@ -84,7 +84,7 @@ const theme = extendTheme({
 					field: {
 						borderRadius: "15px",
 						border: "2px solid #343434",
-						p: "5px 20px",
+						p: "5px 20px 5px 35px",
 						bg: "background",
 						_hover: {
 							border: "3px solid #00FFD9",
@@ -102,7 +102,7 @@ const theme = extendTheme({
 				global: {
 					width: "fit-contents",
 					height: "fit-contents",
-					padding: "5px 30px",
+					padding: "5px 20px",
 					color: "background",
 					bg: "dkNavy",
 					border: "1px solid #FFF",

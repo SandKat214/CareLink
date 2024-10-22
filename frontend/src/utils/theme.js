@@ -24,16 +24,17 @@ const theme = extendTheme({
 				color: "char",
 			},
 			"::-webkit-scrollbar": {
-				height: "3px",
-				width: "3px",
+				width: "7px",
 			},
 			"::-webkit-scrollbar-track": {
 				background: "background",
 				border: "1px solid #343434",
-				padding: "2px",
+				borderRadius: "40px",
+				margin: "3px 0",
 			},
 			"::-webkit-scrollbar-thumb": {
 				bgColor: "dkGreen",
+				borderRadius: "40px",
 			},
 		},
 	},
@@ -42,11 +43,11 @@ const theme = extendTheme({
 		Button: {
 			variants: {
 				dkAction: {
-					padding: "10px 15px",
+					padding: "7px 15px",
 					height: "fit-content",
 					width: "fit-content",
 					color: "dkGreen",
-					border: "2px solid #0F737E",
+					border: "1px solid #0F737E",
 					boxShadow: "0 4px 4px #34343480",
 					borderRadius: "15px",
 					_hover: {
@@ -58,8 +59,8 @@ const theme = extendTheme({
 					},
 				},
 
-                ltAction: {
-                    padding: "10px 15px",
+				ltAction: {
+					padding: "7px 15px 7px 10px",
 					height: "fit-content",
 					width: "fit-content",
 					color: "ltGreen",
@@ -73,7 +74,7 @@ const theme = extendTheme({
 						fontStyle: "italic",
 						boxShadow: "0 0 20px #00FFD9",
 					},
-                }
+				},
 			},
 		},
 
@@ -120,6 +121,20 @@ const theme = extendTheme({
 						bg: "ltGreen",
 						border: "none",
 						boxShadow: "0 0 20px #00FFD9",
+					},
+				},
+
+				patient: {
+					_hover: {
+						fontStyle: "italic",
+						fontWeight: "bold",
+						color: "dkGreen",
+					},
+					_activeLink: {
+						textDecoration: "underline",
+						fontStyle: "italic",
+						fontWeight: "bold",
+						color: "dkGreen",
 					},
 				},
 			},

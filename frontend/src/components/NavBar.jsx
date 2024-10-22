@@ -1,15 +1,25 @@
-import { Flex, Heading, Link, Text } from "@chakra-ui/react"
+import { Flex, Heading, HStack, Icon, Link, Text } from "@chakra-ui/react"
 import { NavLink } from "react-router-dom"
 import "@fontsource/lalezar"
 
+// icons
+import { MdGroups } from "react-icons/md"
+import { IoHome } from "react-icons/io5"
+
 const NavLinks = () => {
 	return (
-		<Flex w='fit-content' h='fit-content' gap='30px'>
+		<Flex w='fit-content' h='fit-content' gap='20px'>
 			<Link as={NavLink} to='/' variant='global'>
-				Home
+				<HStack gap={2}>
+					<Icon as={IoHome} boxSize={4} />
+					<Text as='span'>Home</Text>
+				</HStack>
 			</Link>
 			<Link as={NavLink} to='/patients' variant='global'>
-				Patients
+				<HStack gap={2}>
+					<Icon as={MdGroups} boxSize={6} />
+					<Text as='span'>Patients</Text>
+				</HStack>
 			</Link>
 		</Flex>
 	)

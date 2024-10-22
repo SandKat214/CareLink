@@ -7,9 +7,15 @@ import Footer from "../components/Footer"
 
 const RootLayout = () => {
 	return (
-		<VStack w='100vw' h='100vh' justify='space-between' gap={0}>
+		<VStack
+			w='100vw'
+			h='100vh'
+			maxH='100vh'
+			justify='space-between'
+			gap={0}
+		>
 			<NavBar />
-                <Outlet />
+			<Outlet />
 			<Footer />
 		</VStack>
 	)

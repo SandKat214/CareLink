@@ -180,3 +180,60 @@ export const patients = [
 		zip: "99999",
 	},
 ]
+
+export const records = [
+	{
+		_id: 1,
+		patientId: "671597f127580d1002ee6c39",
+		apptDate: "2023-10-01T19:30:00.000+00:00",
+		notes: "Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque",
+	},
+	{
+		_id: 2,
+		patientId: "671597f127580d1002ee6c39",
+		apptDate: "2023-10-01T19:30:00.000+00:00",
+		notes: "Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque",
+	},
+	{
+		_id: 3,
+		patientId: "671597f127580d1002ee6c39",
+		apptDate: "2023-10-01T19:30:00.000+00:00",
+		notes: "Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque",
+	},
+	{
+		_id: 4,
+		patientId: "671597f127580d1002ee6c39",
+		apptDate: "2023-10-01T19:30:00.000+00:00",
+		notes: "Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque",
+	},
+	{
+		_id: 5,
+		patientId: "671597f127580d1002ee6c39",
+		apptDate: "2023-10-01T19:30:00.000+00:00",
+		notes: "Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque",
+	},
+	{
+		_id: 6,
+		patientId: "671597f127580d1002ee6c39",
+		apptDate: "2023-10-01T19:30:00.000+00:00",
+		notes: "Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque",
+	},
+	{
+		_id: 7,
+		patientId: "671597f127580d1002ee6c39",
+		apptDate: "2023-10-01T19:30:00.000+00:00",
+		notes: "Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque",
+	},
+	{
+		_id: 8,
+		patientId: "671597f127580d1002ee6c39",
+		apptDate: "2023-10-01T19:30:00.000+00:00",
+		notes: "Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque",
+	},
+	{
+		_id: 9,
+		patientId: "671597f127580d1002ee6c39",
+		apptDate: "2023-10-01T19:30:00.000+00:00",
+		notes: "Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque Lorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisqueLorem ipsum odor amet, consectetuer adipiscing elit. Interdum quisque",
+	},
+]

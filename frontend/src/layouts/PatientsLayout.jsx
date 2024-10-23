@@ -31,8 +31,8 @@ const PatientsLayout = () => {
 	const [patients, setPatients] = useState([])
 
 	// Fetch patients from db
-	const { isLoading } = useQuery({
-		queryKey: [searchValue],
+	const { isLoading, refetch: fetchPatients } = useQuery({
+		queryKey: ["patients", searchValue],
 		queryFn: async () => {
 			// if value typed in search bar, fetch matching
 			try {
@@ -53,20 +53,13 @@ const PatientsLayout = () => {
 				setPatients(res.data)
 				return res.data
 			} catch (error) {
+				console.log(error.message)
 				toast({
-					description: "Error fetching patients from server.",
+					description: "Could not retrieve patients from the server",
 					status: "error",
 				})
-				console.error(error)
 				return error
 			}
-		},
-		onError: () => {
-			toast({
-				description: "Error fetching patients from server.",
-				status: "error",
-			})
-			console.error(error)
 		},
 	})
 

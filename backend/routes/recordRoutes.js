@@ -8,16 +8,16 @@ const {
 
 const router = express.Router()
 
-// GET all patients
+// GET all records for a patient
 router.get("/:patientId", getRecords)
 
-// POST a new workout
+// POST a new record for a patient
 router.post("/", createRecord)
 
-// DELETE a workout
+// DELETE a record
 router.delete("/:id", deleteRecord)
 
-// UPDATE a workout
+// UPDATE a record
 router.patch("/:id", updateRecord)
 
 module.exports = router

@@ -19,13 +19,13 @@ router.get("/:id", getPatient)
 // GET by search value
 router.get("/search/:q", getPatientsQ)
 
-// POST a new workout
+// POST a new patient
 router.post("/", createPatient)
 
-// DELETE a workout
+// DELETE a patient
 router.delete("/:id", deletePatient)
 
-// UPDATE a workout
+// UPDATE a patient
 router.patch("/:id", updatePatient)
 
 module.exports = router

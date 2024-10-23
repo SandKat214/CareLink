@@ -42,11 +42,30 @@ const theme = extendTheme({
 	components: {
 		Button: {
 			variants: {
+                alertAction:  {
+					padding: "7px 15px",
+					height: "fit-content",
+					width: "fit-content",
+					color: "alert",
+                    fontSize: "14px",
+					border: "1px solid #8D0000",
+					boxShadow: "0 4px 4px #34343480",
+					borderRadius: "15px",
+					_hover: {
+						color: "background",
+						textDecoration: "underline",
+						bg: "alert",
+						fontStyle: "italic",
+						boxShadow: "0 0 20px #8D0000",
+					},
+				},
+
 				dkAction: {
 					padding: "7px 15px",
 					height: "fit-content",
 					width: "fit-content",
 					color: "dkGreen",
+                    fontSize: "14px",
 					border: "1px solid #0F737E",
 					boxShadow: "0 4px 4px #34343480",
 					borderRadius: "15px",
@@ -63,6 +82,7 @@ const theme = extendTheme({
 					padding: "7px 15px 7px 10px",
 					height: "fit-content",
 					width: "fit-content",
+                    fontSize: "14px",
 					color: "ltGreen",
 					border: "1px solid #00FFD9",
 					boxShadow: "0 4px 4px #00FFD94D",

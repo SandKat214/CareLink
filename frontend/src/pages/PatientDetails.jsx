@@ -13,7 +13,7 @@ import {
 	Tooltip,
 	VStack,
 } from "@chakra-ui/react"
-import { NavLink, useParams } from "react-router-dom"
+import { NavLink, Link as RRLink, useNavigate, useParams } from "react-router-dom"
 import axios from "axios"
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
@@ -22,9 +22,11 @@ import { useQuery } from "@tanstack/react-query"
 import { FaTrashCan } from "react-icons/fa6"
 import { MdModeEdit } from "react-icons/md"
 import { IoEye } from "react-icons/io5"
+import { ArrowBackIcon } from "@chakra-ui/icons"
 
 const PatientDetails = () => {
 	const { patientId } = useParams()
+    const navigate = useNavigate()
 	const [records, setRecords] = useState([])
 	const [patient, setPatient] = useState({})
 
@@ -70,7 +72,16 @@ const PatientDetails = () => {
 
 	return (
 		<VStack p='40px 60px' gap='15px' h='100%' maxH='100%' width='100%'>
-			<Flex w='100%' justify='left'>
+			<Flex w='100%' justify='space-between'>
+				<Button
+					variant='undo'
+					leftIcon={<ArrowBackIcon />}
+					onClick={() => {
+						navigate("..", { relative: "path" })
+					}}
+				>
+					Back to overview
+				</Button>
 				<Button
 					variant='alertAction'
 					leftIcon={<Icon as={FaTrashCan} />}
@@ -196,6 +207,8 @@ const PatientDetails = () => {
 								mx='10px'
 							>
 								<Button
+									as={RRLink}
+									to={"record"}
 									variant='dkAction'
 									leftIcon={<Icon as={IoEye} />}
 								>
@@ -226,8 +239,11 @@ const PatientDetails = () => {
 													mx='10px'
 												>
 													<Link
-														as={NavLink}
-														to={`/${patientId}/records#${record._id}`}
+														as={RRLink}
+														to={`record#${record._id}`}
+														state={{
+															transRecord: record,
+														}}
 														variant='patient'
 													>
 														{date.toDateString()},{" "}

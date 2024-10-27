@@ -1,4 +1,4 @@
-import { extendTheme, textDecoration } from "@chakra-ui/react"
+import { Accordion, extendTheme, textDecoration } from "@chakra-ui/react"
 import "@fontsource/poppins"
 
 const theme = extendTheme({
@@ -40,6 +40,29 @@ const theme = extendTheme({
 	},
 
 	components: {
+        Accordion: {
+            variants: {
+                record: {
+                    container: {
+                        border: 'none'
+                    },
+                    button: {
+                        fontWeight: 'bold',
+                        _hover: {
+                            bg: 'none',
+                            color: 'dkGreen',
+                            fontStyle: 'italic'
+                        },
+                        _expanded: {
+                            bg: 'none',
+                            color: 'dkGreen',
+                            fontStyle: 'italic'
+                        },
+                    }
+                }
+            }
+        },
+
 		Button: {
 			variants: {
                 alertAction:  {
@@ -95,6 +118,17 @@ const theme = extendTheme({
 						boxShadow: "0 0 20px #00FFD9",
 					},
 				},
+
+                undo: {
+                    padding: '5px',
+                    color: 'alert',
+                    height: 'fit-content',
+                    width: 'fit-content',
+                    _hover: {
+                        fontStyle: 'italic',
+                        textDecoration: 'underline'
+                    }
+                },
 			},
 		},
 
@@ -159,6 +193,29 @@ const theme = extendTheme({
 				},
 			},
 		},
+
+        Menu: {
+            variants: {
+                record: {
+                    button: {
+                        width: '350px',
+                        px: '20px',
+                        border: '2px solid #343434',
+                        borderRadius: '40px',
+                        _hover: {
+                            color: 'dkGreen',
+                            fontStyle: 'italic',
+                            borderColor: 'dkGreen'
+                        },
+                        _focus: {
+                            color: 'dkGreen',
+                            fontStyle: 'italic',
+                            borderColor: 'dkGreen'
+                        }
+                    }
+                }
+            }
+        },
 	},
 })
 

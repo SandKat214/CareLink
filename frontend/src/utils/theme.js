@@ -40,37 +40,37 @@ const theme = extendTheme({
 	},
 
 	components: {
-        Accordion: {
-            variants: {
-                record: {
-                    container: {
-                        border: 'none'
-                    },
-                    button: {
-                        fontWeight: 'bold',
-                        _hover: {
-                            bg: 'none',
-                            color: 'dkGreen',
-                            fontStyle: 'italic'
-                        },
-                        _expanded: {
-                            bg: 'none',
-                            color: 'dkGreen',
-                            fontStyle: 'italic'
-                        },
-                    }
-                }
-            }
-        },
+		Accordion: {
+			variants: {
+				record: {
+					container: {
+						border: "none",
+					},
+					button: {
+						fontWeight: "bold",
+						_hover: {
+							bg: "none",
+							color: "dkGreen",
+							fontStyle: "italic",
+						},
+						_expanded: {
+							bg: "none",
+							color: "dkGreen",
+							fontStyle: "italic",
+						},
+					},
+				},
+			},
+		},
 
 		Button: {
 			variants: {
-                alertAction:  {
+				alertAction: {
 					padding: "7px 15px",
 					height: "fit-content",
 					width: "fit-content",
 					color: "alert",
-                    fontSize: "14px",
+					fontSize: "14px",
 					border: "1px solid #8D0000",
 					boxShadow: "0 4px 4px #34343480",
 					borderRadius: "15px",
@@ -88,7 +88,7 @@ const theme = extendTheme({
 					height: "fit-content",
 					width: "fit-content",
 					color: "dkGreen",
-                    fontSize: "14px",
+					fontSize: "14px",
 					border: "1px solid #0F737E",
 					boxShadow: "0 4px 4px #34343480",
 					borderRadius: "15px",
@@ -105,7 +105,7 @@ const theme = extendTheme({
 					padding: "7px 15px 7px 10px",
 					height: "fit-content",
 					width: "fit-content",
-                    fontSize: "14px",
+					fontSize: "14px",
 					color: "ltGreen",
 					border: "1px solid #00FFD9",
 					boxShadow: "0 4px 4px #00FFD94D",
@@ -119,16 +119,16 @@ const theme = extendTheme({
 					},
 				},
 
-                undo: {
-                    padding: '5px',
-                    color: 'alert',
-                    height: 'fit-content',
-                    width: 'fit-content',
-                    _hover: {
-                        fontStyle: 'italic',
-                        textDecoration: 'underline'
-                    }
-                },
+				undo: {
+					padding: "5px",
+					color: "alert",
+					height: "fit-content",
+					width: "fit-content",
+					_hover: {
+						fontStyle: "italic",
+						textDecoration: "underline",
+					},
+				},
 			},
 		},
 
@@ -194,28 +194,42 @@ const theme = extendTheme({
 			},
 		},
 
-        Menu: {
-            variants: {
-                record: {
-                    button: {
-                        width: '350px',
-                        px: '20px',
-                        border: '2px solid #343434',
-                        borderRadius: '40px',
-                        _hover: {
-                            color: 'dkGreen',
-                            fontStyle: 'italic',
-                            borderColor: 'dkGreen'
-                        },
-                        _focus: {
-                            color: 'dkGreen',
-                            fontStyle: 'italic',
-                            borderColor: 'dkGreen'
-                        }
-                    }
-                }
-            }
-        },
+		Menu: {
+			variants: {
+				record: {
+					button: {
+						width: "350px",
+						px: "20px",
+						border: "2px solid #343434",
+						borderRadius: "40px",
+						_hover: {
+							color: "dkGreen",
+							fontStyle: "italic",
+							borderColor: "dkGreen",
+						},
+						_focus: {
+							color: "dkGreen",
+							fontStyle: "italic",
+							borderColor: "dkGreen",
+						},
+					},
+				},
+			},
+		},
+
+		Textarea: {
+			variants: {
+				record: {
+					h: "200px",
+					border: "2px solid #0F737E",
+                    minH: 'fit-content',
+					_hover: {
+						h: "200px",
+						border: "2px solid #0F737E",
+					},
+				},
+			},
+		},
 	},
 })
 

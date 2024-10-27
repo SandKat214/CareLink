@@ -246,8 +246,7 @@ const PatientDetails = () => {
 														}}
 														variant='patient'
 													>
-														{date.toDateString()},{" "}
-														{date.toLocaleTimeString()}
+														{date.toDateString()}
 													</Link>
 												</Tooltip>
 											</ListItem>

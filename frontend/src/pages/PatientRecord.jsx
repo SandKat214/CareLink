@@ -12,14 +12,13 @@ import {
 	HStack,
 	Icon,
 	Link,
-	List,
-	ListItem,
 	Menu,
 	MenuButton,
 	MenuItem,
 	MenuList,
 	Spinner,
 	Text,
+	Textarea,
 	Tooltip,
 	VStack,
 } from "@chakra-ui/react"
@@ -30,7 +29,12 @@ import axios from "axios"
 
 // icons
 import { MdAdd } from "react-icons/md"
-import { ArrowBackIcon, ChevronDownIcon } from "@chakra-ui/icons"
+import {
+	ArrowBackIcon,
+	CheckIcon,
+	ChevronDownIcon,
+	CloseIcon,
+} from "@chakra-ui/icons"
 import { MdModeEdit } from "react-icons/md"
 
 const PatientRecord = () => {
@@ -44,6 +48,13 @@ const PatientRecord = () => {
 	)
 	const [records, setRecords] = useState([])
 	const [patient, setPatient] = useState({})
+	const [recordToEdit, setRecordToEdit] = useState(null)
+	const [newRecord, setNewRecord] = useState(null)
+	const [recordData, setRecordData] = useState({
+		id: null,
+		notes: "",
+	})
+	console.log(recordData)
 
 	const {} = useQuery({
 		queryKey: ["patient", patientId],
@@ -84,6 +95,13 @@ const PatientRecord = () => {
 		},
 		retry: 1,
 	})
+
+    const resetData = () => {
+        setRecordData({
+            id: null,
+            notes: "",
+        })
+    }
 
 	useEffect(() => {
 		if (activeRecord && records.length > 0) {
@@ -162,9 +180,7 @@ const PatientRecord = () => {
 											{activeRecord
 												? `${new Date(
 														activeRecord.apptDate
-												  ).toDateString()} ${new Date(
-														activeRecord.apptDate
-												  ).toLocaleTimeString()}`
+												  ).toDateString()}`
 												: "Jump to Appointment Record"}
 										</Text>
 										<ChevronDownIcon />
@@ -186,8 +202,7 @@ const PatientRecord = () => {
 														setActiveRecord(record)
 													}}
 												>
-													{date.toDateString()},{" "}
-													{date.toLocaleTimeString()}
+													{date.toDateString()}
 												</Link>
 											</MenuItem>
 										)
@@ -222,6 +237,7 @@ const PatientRecord = () => {
 							<Accordion
 								variant='record'
 								index={expanded}
+								w='100%'
 								allowToggle
 							>
 								{records.length > 0 ? (
@@ -256,6 +272,9 @@ const PatientRecord = () => {
 																		setActiveRecord(
 																			null
 																		)
+																		setRecordToEdit(
+																			null
+																		)
 																	} else {
 																		setExpanded(
 																			[
@@ -270,30 +289,90 @@ const PatientRecord = () => {
 															>
 																<AccordionIcon />
 																{date.toDateString()}
-																,{" "}
-																{date.toLocaleTimeString()}
 															</AccordionButton>
 														</Tooltip>
 														<AccordionPanel>
-															<VStack>
-																<Text>
-																	{
-																		record.notes
-																	}
-																</Text>
-																<Flex
-																	w='100%'
-																	justify='right'
-																>
-																	<Button
-																		variant='dkAction'
-																		leftIcon={
-																			<MdModeEdit />
-																		}
-																	>
-																		Edit
-																	</Button>
-																</Flex>
+															<VStack align='flex-start'>
+																{recordToEdit &&
+																recordToEdit._id ===
+																	record._id ? (
+																	<>
+																		<Textarea
+																			defaultValue={
+																				record.notes
+																			}
+																			placeholder='Enter appointment notes...'
+																			variant='record'
+																			onChange={(
+																				e
+																			) => {
+																				setRecordData((prevData) => ({
+                                                                                    ...prevData,
+                                                                                    notes: e.target.value
+                                                                                }))
+																			}}
+																		/>
+																		<Flex
+																			w='100%'
+																			justify='right'
+																			gap='20px'
+																		>
+																			<Button
+																				variant='alertAction'
+																				leftIcon={
+																					<CloseIcon />
+																				}
+																				onClick={() => {
+																					setRecordToEdit(
+																						null
+																					)
+                                                                                    resetData()
+																				}}
+																			>
+																				Cancel
+																			</Button>
+																			<Button
+																				variant='dkAction'
+																				leftIcon={
+																					<CheckIcon />
+																				}
+																			>
+																				Submit
+																				Changes
+																			</Button>
+																		</Flex>
+																	</>
+																) : (
+																	<>
+																		<Text>
+																			{
+																				record.notes
+																			}
+																		</Text>
+																		<Flex
+																			w='100%'
+																			justify='right'
+																		>
+																			<Button
+																				variant='dkAction'
+																				leftIcon={
+																					<MdModeEdit />
+																				}
+																				onClick={() => {
+																					setRecordToEdit(
+																						record
+																					)
+																					setRecordData({
+                                                                                        id: record._id,
+                                                                                        notes: record.notes
+                                                                                    })
+																				}}
+																			>
+																				Edit
+																			</Button>
+																		</Flex>
+																	</>
+																)}
 															</VStack>
 														</AccordionPanel>
 													</>

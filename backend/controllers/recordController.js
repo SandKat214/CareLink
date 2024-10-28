@@ -51,34 +51,34 @@ const createRecord = async (req, res) => {
 	}
 }
 
-// DELETE a record
-const deleteRecord = async (req, res) => {
-	const { id } = req.params
+// DELETE records by patient id
+const deleteRecords = async (req, res) => {
+	const { patientId } = req.params
 
-	if (!mongoose.Types.ObjectId.isValid(id)) {
-		console.log("Invalid record id for delete.")
-		return res.status(400).json({ error: "Invalid record id for delete." })
+	if (!mongoose.Types.ObjectId.isValid(patientId)) {
+		console.log("Invalid patient id for records delete.")
+		return res.status(400).json({ error: "Invalid patient id for records delete." })
 	}
 
 	try {
-		const record = await Record.findOneAndDelete({ _id: id })
+		const result = await Record.deleteMany({ patientId: patientId })
 
-		if (!record) {
+		if (!result.acknowledged) {
 			console.log(
-				"Unable to locate record with that id for delete operation"
+				"Unable to delete records with that patientId"
 			)
 			return res.status(404).json({
-				error: "Unable to locate record with that id for delete operation.",
+				error: "Unable to delete records for that patient.",
 			})
 		}
 		console.log(
-			`Record for ${new Date(record.apptDate).toUTCString()} deleted.`
+			`${result.deletedCount} records for patientID: ${patientId} deleted.`
 		)
-		res.status(200).json(record)
+		res.status(200).json(result)
 	} catch (error) {
 		console.log(error.message)
 		res.status(400).json({
-			error: "Invalid request from client for record delete operation.",
+			error: "Invalid request from client for records delete operation.",
 		})
 	}
 }
@@ -123,6 +123,6 @@ const updateRecord = async (req, res) => {
 module.exports = {
 	getRecords,
 	createRecord,
-	deleteRecord,
+	deleteRecords,
 	updateRecord,
 }

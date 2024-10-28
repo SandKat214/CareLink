@@ -2,7 +2,7 @@ const express = require("express")
 const {
 	getRecords,
 	createRecord,
-	deleteRecord,
+	deleteRecords,
 	updateRecord,
 } = require("../controllers/recordController")
 
@@ -14,8 +14,8 @@ router.get("/:patientId", getRecords)
 // POST a new record for a patient
 router.post("/", createRecord)
 
-// DELETE a record
-router.delete("/:id", deleteRecord)
+// DELETE patient records
+router.delete("/:patientId", deleteRecords)
 
 // UPDATE a record
 router.patch("/:id", updateRecord)

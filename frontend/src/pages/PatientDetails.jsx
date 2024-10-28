@@ -11,25 +11,33 @@ import {
 	Spinner,
 	Text,
 	Tooltip,
+	useDisclosure,
+    useToast,
 	VStack,
 } from "@chakra-ui/react"
-import { NavLink, Link as RRLink, useNavigate, useParams } from "react-router-dom"
+import { Link as RRLink, useNavigate, useOutletContext, useParams } from "react-router-dom"
 import axios from "axios"
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 
 // icons
 import { FaTrashCan } from "react-icons/fa6"
 import { MdModeEdit } from "react-icons/md"
 import { IoEye } from "react-icons/io5"
 import { ArrowBackIcon } from "@chakra-ui/icons"
+import AlertModal from "../components/AlertModal"
 
 const PatientDetails = () => {
 	const { patientId } = useParams()
+    const [ fetchPatients ] = useOutletContext()
     const navigate = useNavigate()
+    const { isOpen, onClose, onOpen } = useDisclosure()
+    const toast = useToast()
+
 	const [records, setRecords] = useState([])
 	const [patient, setPatient] = useState({})
 
+    // fetch patient from db
 	const {} = useQuery({
 		queryKey: ["patient", patientId],
 		queryFn: async () => {
@@ -44,10 +52,11 @@ const PatientDetails = () => {
 				throw new Error("Could not find patient with that id.")
 			}
 		},
-		retry: 1,
+		retry: 0,
 		throwOnError: true,
 	})
 
+    // fetch patient's records from db
 	const { isLoading, refetch: fetchRecords } = useQuery({
 		queryKey: ["records", patientId],
 		queryFn: async () => {
@@ -70,8 +79,29 @@ const PatientDetails = () => {
 		retry: 1,
 	})
 
+    // delete patient and records from db
+    const { isPending, mutateAsync: deletePatient } = useMutation({
+		mutationFn: async () => {
+			try {
+                await axios.delete(`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`)
+                await axios.delete(`${import.meta.env.VITE_PATIENT_API}records/${patientId}`)
+                fetchPatients()
+                navigate("..", { relative: 'path' })
+			} catch (error) {
+				console.log(error.message)
+				toast({
+					description:
+						"Error deleting patient data.",
+					status: "error",
+				})
+				return error
+			}		
+		},
+	})
+
 	return (
 		<VStack p='40px 60px' gap='15px' h='100%' maxH='100%' width='100%'>
+            <AlertModal isOpen={isOpen} onClose={onClose} message={`This action will permanently remove all personal information and record data associated with this patient. Once confirmed, this CANNOT be undone.`} callBack={deletePatient} />
 			<Flex w='100%' justify='space-between'>
 				<Button
 					variant='undo'
@@ -85,6 +115,11 @@ const PatientDetails = () => {
 				<Button
 					variant='alertAction'
 					leftIcon={<Icon as={FaTrashCan} />}
+                    onClick={() => {
+                        onOpen()
+                    }}
+                    isLoading={isPending}
+                    loadingText="Deleting..."
 				>
 					Delete
 				</Button>

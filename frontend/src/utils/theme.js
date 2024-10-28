@@ -217,6 +217,23 @@ const theme = extendTheme({
 			},
 		},
 
+        Modal: {
+            variants: {
+                alert: {
+                    dialog: {
+                        border: '4px solid #8D0000',
+                        borderRadius: '10px',
+                        boxShadow: '0 4px 4px #343434',
+                    },
+                    body: {
+                        fontStyle: 'italic',
+                        textAlign: 'center'
+                        
+                    }
+                }
+            }
+        },
+
 		Textarea: {
 			variants: {
 				record: {

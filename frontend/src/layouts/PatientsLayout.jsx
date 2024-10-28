@@ -185,7 +185,7 @@ const PatientsLayout = () => {
 				</Flex>
 			</VStack>
 			<VStack as='section' flex={1} height='100%' maxH='100%'>
-				<Outlet />
+				<Outlet context={[fetchPatients]} />
 			</VStack>
 		</Flex>
 	)

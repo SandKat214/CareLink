@@ -397,7 +397,11 @@ const PatientRecord = () => {
 																	<Button
 																		variant='alertAction'
 																		leftIcon={
-																			<CloseIcon />
+																			<CloseIcon
+																				boxSize={
+																					2.5
+																				}
+																			/>
 																		}
 																		onClick={() => {
 																			undoNew()
@@ -580,7 +584,11 @@ const PatientRecord = () => {
 																					<Button
 																						variant='alertAction'
 																						leftIcon={
-																							<CloseIcon />
+																							<CloseIcon
+																								boxSize={
+																									2.5
+																								}
+																							/>
 																						}
 																						onClick={() => {
 																							formik.resetForm()

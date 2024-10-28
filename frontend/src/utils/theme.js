@@ -117,6 +117,13 @@ const theme = extendTheme({
 						fontStyle: "italic",
 						boxShadow: "0 0 20px #00FFD9",
 					},
+					_activeLink: {
+						color: "dkNavy",
+						textDecoration: "underline",
+						bg: "ltGreen",
+						fontStyle: "italic",
+						boxShadow: "0 0 20px #00FFD9",
+					},
 				},
 
 				undo: {
@@ -128,6 +135,24 @@ const theme = extendTheme({
 						fontStyle: "italic",
 						textDecoration: "underline",
 					},
+				},
+			},
+		},
+
+		FormHelperText: {
+			variants: {
+				patient: {
+					m: "0px",
+					fontSize: "12px",
+				},
+			},
+		},
+
+		FormLabel: {
+			variants: {
+				patient: {
+					m: "0px",
+					fontSize: "14px",
 				},
 			},
 		},
@@ -145,6 +170,23 @@ const theme = extendTheme({
 						},
 						_focus: {
 							border: "3px solid #00FFD9",
+						},
+					},
+				},
+
+				patient: {
+					field: {
+						borderRadius: "8px",
+						border: "2px solid #343434",
+						p: "2px 10px",
+						bg: "background",
+						fontSize: "13px",
+						h: "fit-content",
+						_hover: {
+							border: "3px solid #0F737E",
+						},
+						_focus: {
+							border: "3px solid #0F737E",
 						},
 					},
 				},
@@ -217,28 +259,49 @@ const theme = extendTheme({
 			},
 		},
 
-        Modal: {
-            variants: {
-                alert: {
-                    dialog: {
-                        border: '4px solid #8D0000',
-                        borderRadius: '10px',
-                        boxShadow: '0 4px 4px #343434',
-                    },
-                    body: {
-                        fontStyle: 'italic',
-                        textAlign: 'center'
-                    }
-                }
-            }
-        },
+		Modal: {
+			variants: {
+				alert: {
+					dialog: {
+						border: "4px solid #8D0000",
+						borderRadius: "10px",
+						boxShadow: "0 4px 4px #343434",
+					},
+					body: {
+						fontStyle: "italic",
+						textAlign: "center",
+					},
+				},
+			},
+		},
+
+		Select: {
+			variants: {
+				patient: {
+					field: {
+						borderRadius: "8px",
+						border: "2px solid #343434",
+						p: "2px 10px",
+						bg: "background",
+						fontSize: "13px",
+						h: "fit-content",
+						_hover: {
+							border: "3px solid #0F737E",
+						},
+						_focus: {
+							border: "3px solid #0F737E",
+						},
+					},
+				},
+			},
+		},
 
 		Textarea: {
 			variants: {
 				record: {
 					h: "200px",
 					border: "2px solid #0F737E",
-                    minH: 'fit-content',
+					minH: "fit-content",
 					_hover: {
 						h: "200px",
 						border: "2px solid #0F737E",

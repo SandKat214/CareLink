@@ -176,6 +176,8 @@ const PatientsLayout = () => {
 						m='10px'
 					>
 						<Button
+							as={NavLink}
+							to='new'
 							variant='ltAction'
 							leftIcon={<Icon as={MdAdd} boxSize={5} />}
 						>

@@ -53,9 +53,9 @@ const PatientsLayout = () => {
 				setPatients(res.data)
 				return res.data
 			} catch (error) {
-				console.log(error.message)
+				console.log(error)
 				toast({
-					description: "Could not retrieve patients from the server",
+					description: error.response.data.error || "Could not retrieve patients from the server.",
 					status: "error",
 				})
 				return error

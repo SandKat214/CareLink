@@ -30,20 +30,20 @@ const AlertModal = ({ isOpen, onClose, message, callBack }) => {
 				<ModalFooter>
 					<Flex w='100%' justify='space-between' px='20px'>
 						<Button
+							onClick={onClose}
+							variant='undo'
+						>
+							No, don't continue!
+						</Button>
+						<Button
+							variant='undo'
+							color='dkGreen'
 							onClick={() => {
 								callBack()
 								onClose()
 							}}
-							variant='undo'
 						>
 							Yes, continue!
-						</Button>
-						<Button
-							onClick={onClose}
-							variant='undo'
-							color='dkGreen'
-						>
-							No, don't continue!
 						</Button>
 					</Flex>
 				</ModalFooter>

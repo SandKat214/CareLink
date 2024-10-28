@@ -64,6 +64,9 @@ const PatientRecord = () => {
 		validationSchema: Yup.object({
 			notes: Yup.string().required("A note is required."),
 		}),
+		onSubmit: async (values) => {
+			mutateAsync(values)
+		}
 	})
 
 	// fetch patient from db
@@ -107,25 +110,25 @@ const PatientRecord = () => {
 	})
 
 	const { isPending, mutateAsync } = useMutation({
-		mutationFn: async () => {
+		mutationFn: async (values) => {
 			try {
 				// if this is an edit
-				if (formik.values.id) {
+				if (values.id) {
 					const data = {
-						notes: formik.values.notes,
+						notes: values.notes,
 					}
 					await axios.patch(
 						`${import.meta.env.VITE_PATIENT_API}records/${
-							formik.values.id
+							values.id
 						}`,
 						data
 					)
 				} else {
 					// else it's a create
 					const data = {
-						patientId: formik.values.patientId,
-						apptDate: formik.values.apptDate,
-						notes: formik.values.notes,
+						patientId: values.patientId,
+						apptDate: values.apptDate,
+						notes: values.notes,
 					}
 					await axios.post(
 						`${import.meta.env.VITE_PATIENT_API}records/`,
@@ -137,9 +140,9 @@ const PatientRecord = () => {
 				formik.resetForm()
 				fetchRecords()
 			} catch (error) {
-				console.log(error.message)
+				console.log(error)
 				toast({
-					description: "Error saving submission.",
+					description: error.response.data.error || "Error saving submission.",
 					status: "error",
 				})
 				return error
@@ -172,8 +175,8 @@ const PatientRecord = () => {
 				(record) => record._id === activeRecord._id
 			)
 			setExpanded([index])
-			// const article = document.getElementById(activeRecord._id)
-			// article?.scrollIntoView({ behavior: "instant", block: "start" })
+			const article = document.getElementById(activeRecord._id)
+			article?.scrollIntoView({ behavior: "instant", block: "start" })
 		}
 	}, [records])
 
@@ -342,7 +345,7 @@ const PatientRecord = () => {
 															}}
 															onSubmit={(e) => {
 																e.preventDefault()
-																mutateAsync()
+																formik.handleSubmit()
 															}}
 														>
 															<FormControl>
@@ -356,16 +359,7 @@ const PatientRecord = () => {
 																	variant='record'
 																	name='notes'
 																	isRequired
-																	onChange={(
-																		e
-																	) => {
-																		formik.setFieldValue(
-																			"notes",
-																			e
-																				.target
-																				.value
-																		)
-																	}}
+																	onChange={formik.handleChange}
 																/>
 																{formik.errors
 																	.notes && (
@@ -444,7 +438,7 @@ const PatientRecord = () => {
 												key={record._id}
 												id={record._id}
 											>
-												<AccordionItem>
+												<AccordionItem >
 													{({ isExpanded }) => (
 														<>
 															<Tooltip
@@ -472,8 +466,8 @@ const PatientRecord = () => {
 																				)
 																			)
 																			if (
-																				activeRecord ===
-																				record
+																				activeRecord._id ===
+																				record._id
 																			) {
 																				setActiveRecord(
 																					expanded.length <=
@@ -524,7 +518,7 @@ const PatientRecord = () => {
 																				e
 																			) => {
 																				e.preventDefault()
-																				mutateAsync()
+																				formik.handleSubmit()
 																			}}
 																		>
 																			<FormControl>
@@ -536,16 +530,7 @@ const PatientRecord = () => {
 																					variant='record'
 																					name='notes'
 																					isRequired
-																					onChange={(
-																						e
-																					) => {
-																						formik.setFieldValue(
-																							"notes",
-																							e
-																								.target
-																								.value
-																						)
-																					}}
+																					onChange={formik.handleChange}
 																				/>
 																				{formik
 																					.errors

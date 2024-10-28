@@ -72,10 +72,11 @@ const PatientDetails = () => {
 				setRecords(res.data)
 				return res.data
 			} catch (error) {
-				console.log(error.message)
+				console.log(error)
 				toast({
 					description:
-						"Could not retrieve records for that patient id",
+						error.response.data.error ||
+						"Could not retrieve records for that patient id.",
 					status: "error",
 				})
 				return error
@@ -94,12 +95,18 @@ const PatientDetails = () => {
 				await axios.delete(
 					`${import.meta.env.VITE_PATIENT_API}records/${patientId}`
 				)
+				toast({
+					description: "Patient successfully deleted.",
+					status: "success",
+				})
 				fetchPatients()
 				navigate("..", { relative: "path" })
 			} catch (error) {
-				console.log(error.message)
+				console.log(error)
 				toast({
-					description: "Error deleting patient data.",
+					description:
+						error.response.data.error ||
+						"Error deleting patient data.",
 					status: "error",
 				})
 				return error
@@ -212,6 +219,11 @@ const PatientDetails = () => {
 							</HStack>
 						</VStack>
 						<VStack gap='5px'>
+							<Flex w='100%' justify='left' >
+								<Heading as='h5' fontSize='16px' color='dkGreen' fontWeight='bold'>
+									Address:
+								</Heading>
+							</Flex>
 							<Text as='p'>{patient.address}</Text>
 							<HStack gap='5px'>
 								<Text>{patient.city},</Text>

@@ -281,10 +281,11 @@ const theme = extendTheme({
 					field: {
 						borderRadius: "8px",
 						border: "2px solid #343434",
-						p: "2px 10px",
+						p: "4px 30px 4px 10px",
 						bg: "background",
 						fontSize: "13px",
 						h: "fit-content",
+                        textOverflow: 'ellipsis',
 						_hover: {
 							border: "3px solid #0F737E",
 						},

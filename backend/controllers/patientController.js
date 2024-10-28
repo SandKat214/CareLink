@@ -48,7 +48,6 @@ const getPatient = async (req, res) => {
 const getPatientsQ = async (req, res) => {
 	const { q } = req.params
 	const regex = new RegExp(q, "i")
-	console.log(regex)
 
 	try {
 		const patients = await Patient.find({

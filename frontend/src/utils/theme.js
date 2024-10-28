@@ -228,7 +228,6 @@ const theme = extendTheme({
                     body: {
                         fontStyle: 'italic',
                         textAlign: 'center'
-                        
                     }
                 }
             }

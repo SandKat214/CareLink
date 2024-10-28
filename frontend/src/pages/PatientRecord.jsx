@@ -4,7 +4,6 @@ import {
 	AccordionIcon,
 	AccordionItem,
 	AccordionPanel,
-	Box,
 	Button,
 	Center,
 	Flex,
@@ -28,7 +27,7 @@ import {
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import axios from "axios";
+import axios from "axios"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 
@@ -49,28 +48,25 @@ const PatientRecord = () => {
 	const toast = useToast()
 
 	const [expanded, setExpanded] = useState([])
-	const [activeRecord, setActiveRecord] = useState(
-		state?.transRecord ?? null
-	)
+	const [activeRecord, setActiveRecord] = useState(state?.transRecord ?? null)
 	const [records, setRecords] = useState([])
 	const [patient, setPatient] = useState({})
 	const [newRecord, setNewRecord] = useState(false)
 
-    // form validation
-    const formik = useFormik({
-        initialValues: {
-            id: null,
-            patientId: patientId,
-            apptDate: new Date(),
-            notes: "",
-        },
-        validationSchema: Yup.object({
-            notes: Yup.string().required("A note is required.")
-        })
-    })
+	// form validation
+	const formik = useFormik({
+		initialValues: {
+			id: null,
+			patientId: patientId,
+			apptDate: new Date(),
+			notes: "",
+		},
+		validationSchema: Yup.object({
+			notes: Yup.string().required("A note is required."),
+		}),
+	})
 
-
-    // fetch patient from db
+	// fetch patient from db
 	const {} = useQuery({
 		queryKey: ["patient", patientId],
 		queryFn: async () => {
@@ -89,7 +85,7 @@ const PatientRecord = () => {
 		throwOnError: true,
 	})
 
-    // fetch patients records from db
+	// fetch patients records from db
 	const { isLoading, refetch: fetchRecords } = useQuery({
 		queryKey: ["records", patientId],
 		queryFn: async () => {
@@ -101,7 +97,9 @@ const PatientRecord = () => {
 				return res.data
 			} catch (error) {
 				console.log(error.message)
-				throw new Error("Could not retrieve the records for that patient.")
+				throw new Error(
+					"Could not retrieve the records for that patient."
+				)
 			}
 		},
 		retry: 0,
@@ -117,17 +115,22 @@ const PatientRecord = () => {
 						notes: formik.values.notes,
 					}
 					await axios.patch(
-						`${import.meta.env.VITE_PATIENT_API}records/${formik.values.id}`,
+						`${import.meta.env.VITE_PATIENT_API}records/${
+							formik.values.id
+						}`,
 						data
-					);
+					)
 				} else {
 					// else it's a create
 					const data = {
 						patientId: formik.values.patientId,
 						apptDate: formik.values.apptDate,
-						notes: formik.values.notes
+						notes: formik.values.notes,
 					}
-					await axios.post(`${import.meta.env.VITE_PATIENT_API}records/`, data);
+					await axios.post(
+						`${import.meta.env.VITE_PATIENT_API}records/`,
+						data
+					)
 				}
 				toast({ description: "Submission saved.", status: "success" })
 				setNewRecord(false)
@@ -136,12 +139,11 @@ const PatientRecord = () => {
 			} catch (error) {
 				console.log(error.message)
 				toast({
-					description:
-						"Error saving submission.",
+					description: "Error saving submission.",
 					status: "error",
 				})
 				return error
-			}		
+			}
 		},
 	})
 
@@ -150,21 +152,21 @@ const PatientRecord = () => {
 		setNewRecord(false)
 		formik.resetForm()
 	}
-    
-    // initiate edit
-    const initEdit = (record, index) => {
-        setExpanded([index])
-        setActiveRecord(record)
-        formik.setValues({
-            id: record._id,
-            patientId: patientId,
-            apptDate: new Date(record.apptDate),
-            notes: record.notes
-        })
-    }
+
+	// initiate edit
+	const initEdit = (record, index) => {
+		setExpanded([index])
+		setActiveRecord(record)
+		formik.setValues({
+			id: record._id,
+			patientId: patientId,
+			apptDate: new Date(record.apptDate),
+			notes: record.notes,
+		})
+	}
 
 	useEffect(() => {
-        // expand record if it's link was chosen from the patient details page
+		// expand record if it's link was chosen from the patient details page
 		if (activeRecord && records.length > 0) {
 			const index = records.findIndex(
 				(record) => record._id === activeRecord._id
@@ -310,7 +312,7 @@ const PatientRecord = () => {
 								w='100%'
 								allowMultiple
 							>
-								{newRecord &&
+								{newRecord && (
 									<AccordionItem>
 										{({ isExpanded }) => (
 											<>
@@ -318,7 +320,13 @@ const PatientRecord = () => {
 													onClick={() => {
 														if (isExpanded) {
 															// close new form and reset form
-															setExpanded(expanded.filter(index => index !== 0))
+															setExpanded(
+																expanded.filter(
+																	(index) =>
+																		index !==
+																		0
+																)
+															)
 															undoNew()
 														}
 													}}
@@ -328,14 +336,21 @@ const PatientRecord = () => {
 												</AccordionButton>
 												<AccordionPanel>
 													<VStack align='flex-start'>
-														<form style={{width: "100%"}} onSubmit={(e) => {
-															e.preventDefault()
-															mutateAsync()
-														}}>
+														<form
+															style={{
+																width: "100%",
+															}}
+															onSubmit={(e) => {
+																e.preventDefault()
+																mutateAsync()
+															}}
+														>
 															<FormControl>
 																<Textarea
 																	defaultValue={
-																		formik.values.notes
+																		formik
+																			.values
+																			.notes
 																	}
 																	placeholder='Enter appointment notes...'
 																	variant='record'
@@ -344,16 +359,34 @@ const PatientRecord = () => {
 																	onChange={(
 																		e
 																	) => {
-																		formik.setFieldValue("notes", e.target.value)
+																		formik.setFieldValue(
+																			"notes",
+																			e
+																				.target
+																				.value
+																		)
 																	}}
 																/>
-																{formik.errors.notes &&
-																	<FormHelperText color='alert' fontSize='12px'>
-																		{formik.errors.notes}
+																{formik.errors
+																	.notes && (
+																	<FormHelperText
+																		color='alert'
+																		fontSize='12px'
+																	>
+																		{
+																			formik
+																				.errors
+																				.notes
+																		}
 																	</FormHelperText>
-																}		
-																<FormHelperText color='char' fontSize='12px'>
-																	Enter new appointment notes.
+																)}
+																<FormHelperText
+																	color='char'
+																	fontSize='12px'
+																>
+																	Enter new
+																	appointment
+																	notes.
 																</FormHelperText>
 																<Flex
 																	w='100%'
@@ -369,7 +402,9 @@ const PatientRecord = () => {
 																		onClick={() => {
 																			undoNew()
 																		}}
-																		isDisabled={isPending}
+																		isDisabled={
+																			isPending
+																		}
 																	>
 																		Cancel
 																	</Button>
@@ -379,21 +414,23 @@ const PatientRecord = () => {
 																			<CheckIcon />
 																		}
 																		type='submit'
-																		isLoading={isPending}
-																		loadingText="Saving..."
+																		isLoading={
+																			isPending
+																		}
+																		loadingText='Saving...'
 																	>
 																		Submit
 																		Record
 																	</Button>
 																</Flex>
-															</FormControl>	
+															</FormControl>
 														</form>
 													</VStack>
 												</AccordionPanel>
 											</>
 										)}
 									</AccordionItem>
-								}
+								)}
 								{records.length > 0 ? (
 									records.map((record, index) => {
 										const date = new Date(record.apptDate)
@@ -403,9 +440,7 @@ const PatientRecord = () => {
 												key={record._id}
 												id={record._id}
 											>
-												<AccordionItem
-													
-												>
+												<AccordionItem>
 													{({ isExpanded }) => (
 														<>
 															<Tooltip
@@ -418,22 +453,52 @@ const PatientRecord = () => {
 																}
 															>
 																<AccordionButton
-																	
 																	onClick={() => {
-																		if (isExpanded) {
+																		if (
+																			isExpanded
+																		) {
 																			// remove index from expanded array and reset activeRecord
-																			setExpanded(expanded.filter(item => item !== index))
-																			if (activeRecord === record) {
-																			setActiveRecord(expanded.length <= 1 ? null : records[expanded[0]])
+																			setExpanded(
+																				expanded.filter(
+																					(
+																						item
+																					) =>
+																						item !==
+																						index
+																				)
+																			)
+																			if (
+																				activeRecord ===
+																				record
+																			) {
+																				setActiveRecord(
+																					expanded.length <=
+																						1
+																						? null
+																						: records[
+																								expanded[0]
+																						  ]
+																				)
 																			}
-																			
-																			if (formik.values.id) {
+
+																			if (
+																				formik
+																					.values
+																					.id
+																			) {
 																				formik.resetForm()
 																			}
 																		} else {
 																			undoNew()
-																			setExpanded([...expanded, index])
-																			setActiveRecord(record)
+																			setExpanded(
+																				[
+																					...expanded,
+																					index,
+																				]
+																			)
+																			setActiveRecord(
+																				record
+																			)
 																		}
 																	}}
 																>
@@ -443,12 +508,21 @@ const PatientRecord = () => {
 															</Tooltip>
 															<AccordionPanel>
 																<VStack align='flex-start'>
-																	{formik.values.id ===
-																		record._id ? (
-																		<form style={{width: "100%"}} onSubmit={(e) => {
-																			e.preventDefault()
-																			mutateAsync()
-																		}}>
+																	{formik
+																		.values
+																		.id ===
+																	record._id ? (
+																		<form
+																			style={{
+																				width: "100%",
+																			}}
+																			onSubmit={(
+																				e
+																			) => {
+																				e.preventDefault()
+																				mutateAsync()
+																			}}
+																		>
 																			<FormControl>
 																				<Textarea
 																					defaultValue={
@@ -461,16 +535,41 @@ const PatientRecord = () => {
 																					onChange={(
 																						e
 																					) => {
-																						formik.setFieldValue("notes", e.target.value)
+																						formik.setFieldValue(
+																							"notes",
+																							e
+																								.target
+																								.value
+																						)
 																					}}
 																				/>
-																				{formik.errors.notes &&
-																					<FormHelperText color='alert' fontSize='12px'>
-																						{formik.errors.notes}
+																				{formik
+																					.errors
+																					.notes && (
+																					<FormHelperText
+																						color='alert'
+																						fontSize='12px'
+																					>
+																						{
+																							formik
+																								.errors
+																								.notes
+																						}
 																					</FormHelperText>
-																				}		
-																				<FormHelperText color='alert' fontSize='12px'>
-																					Edits to patient records cannot be reversed once submitted.
+																				)}
+																				<FormHelperText
+																					color='alert'
+																					fontSize='12px'
+																				>
+																					Edits
+																					to
+																					patient
+																					records
+																					cannot
+																					be
+																					reversed
+																					once
+																					submitted.
 																				</FormHelperText>
 																				<Flex
 																					w='100%'
@@ -486,7 +585,9 @@ const PatientRecord = () => {
 																						onClick={() => {
 																							formik.resetForm()
 																						}}
-																						isDisabled={isPending}
+																						isDisabled={
+																							isPending
+																						}
 																					>
 																						Cancel
 																					</Button>
@@ -496,14 +597,16 @@ const PatientRecord = () => {
 																							<CheckIcon />
 																						}
 																						type='submit'
-																						isLoading={isPending}
-																						loadingText="Saving..."
+																						isLoading={
+																							isPending
+																						}
+																						loadingText='Saving...'
 																					>
 																						Submit
 																						Changes
 																					</Button>
 																				</Flex>
-																			</FormControl>	
+																			</FormControl>
 																		</form>
 																	) : (
 																		<>
@@ -521,7 +624,12 @@ const PatientRecord = () => {
 																					leftIcon={
 																						<MdModeEdit />
 																					}
-																					onClick={() => {initEdit(record, index)}}
+																					onClick={() => {
+																						initEdit(
+																							record,
+																							index
+																						)
+																					}}
 																				>
 																					Edit
 																				</Button>

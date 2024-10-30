@@ -25,12 +25,14 @@ import axios from "axios"
 import { useState } from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 
+// components
+import AlertModal from "../components/AlertModal"
+
 // icons
 import { FaTrashCan } from "react-icons/fa6"
 import { MdModeEdit } from "react-icons/md"
 import { IoEye } from "react-icons/io5"
 import { ArrowBackIcon } from "@chakra-ui/icons"
-import AlertModal from "../components/AlertModal"
 
 const PatientDetails = () => {
 	const { patientId } = useParams()
@@ -38,7 +40,6 @@ const PatientDetails = () => {
 	const navigate = useNavigate()
 	const { isOpen, onClose, onOpen } = useDisclosure()
 	const toast = useToast()
-
 	const [records, setRecords] = useState([])
 	const [patient, setPatient] = useState({})
 
@@ -162,6 +163,8 @@ const PatientDetails = () => {
 						{patient.fname} {patient.lname}
 					</Heading>
 					<Button
+						as={RRLink}
+						to="update"
 						variant='dkAction'
 						leftIcon={<Icon as={MdModeEdit} />}
 					>
@@ -188,7 +191,7 @@ const PatientDetails = () => {
 									DOB:
 								</Heading>
 								<Text as='p' fontSize='16px'>
-									{new Date(patient.dob).toLocaleDateString()}
+									{patient.dob?.slice(0, 10)}
 								</Text>
 							</HStack>
 							<HStack w='100%'>
@@ -268,7 +271,7 @@ const PatientDetails = () => {
 							>
 								<Button
 									as={RRLink}
-									to={"record"}
+									to="record"
 									variant='dkAction'
 									leftIcon={<Icon as={IoEye} />}
 								>

@@ -20,7 +20,7 @@ export const states = [
 		abbr: "CA",
 	},
 	{
-		name: "Colorad0",
+		name: "Colorado",
 		abbr: "CO",
 	},
 	{

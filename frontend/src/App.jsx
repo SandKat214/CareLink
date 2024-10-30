@@ -16,6 +16,7 @@ import Home from "./pages/Home"
 import PatientRecord from "./pages/PatientRecord"
 import Error from "./pages/Error"
 import AddPatient from "./pages/AddPatient"
+import EditPatient from "./pages/EditPatient"
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -25,13 +26,13 @@ const router = createBrowserRouter(
 				<Route path='patients' element={<PatientsLayout />}>
 					<Route errorElement={<Error />}>
 						<Route index element={<Patients />} />
-
+						<Route path='new' element={<AddPatient />} />
 						<Route path=':patientId' element={<PatientDetails />} />
 						<Route
 							path=':patientId/record'
 							element={<PatientRecord />}
 						/>
-						<Route path='new' element={<AddPatient />} />
+						<Route path=':patientId/update' element={<EditPatient />} />
 					</Route>
 				</Route>
 			</Route>

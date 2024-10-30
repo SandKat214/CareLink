@@ -11,34 +11,38 @@ import {
 	useToast,
 	VStack,
 } from "@chakra-ui/react"
-import { useNavigate, useOutletContext } from "react-router-dom"
+import { useNavigate, useOutletContext, useParams } from "react-router-dom"
 import { states } from "../utils/states"
 import { useFormik } from "formik"
 import * as Yup from "yup"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
 // icons
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons"
+import { useState } from "react"
 
-const AddPatient = () => {
+const EditPatient = () => {
 	const maxDate = new Date().toLocaleDateString("en-CA")
 
-	const navigate = useNavigate()
+	const { patientId } = useParams()
+    const navigate = useNavigate()
 	const toast = useToast()
 	const [fetchPatients] = useOutletContext()
 
+    const [patient, setPatient] = useState()
+
 	const formik = useFormik({
 		initialValues: {
-			fname: "",
-			lname: "",
-			telephone: "",
-			email: "",
-			dob: "",
-			address: "",
-			city: "",
-			state: "",
-			zip: "",
+			fname: patient?.fname || "",
+			lname: patient?.lname || "",
+			telephone: patient?.telephone.split("-").join("") || "",
+			email: patient?.email || "",
+			dob: patient?.dob || "",
+			address: patient?.dob || "",
+			city: patient?.city || "",
+			state: patient?.state || "",
+			zip: patient?.zip || "",
 		},
 		validationSchema: Yup.object({
 			fname: Yup.string().required("First name is required."),
@@ -68,10 +72,43 @@ const AddPatient = () => {
 		},
 	})
 
+    console.log(formik.values)
+
+	// fetch patient from db
+	const {} = useQuery({
+		queryKey: ["patient", patientId],
+		queryFn: async () => {
+			try {
+				const res = await axios.get(
+					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`
+				)
+                const patient = res.data
+                formik.setValues({
+                    fname: patient.fname,
+                    lname: patient.lname,
+                    telephone: patient.telephone.split("-").join(""),
+                    email: patient.email,
+                    dob: patient.dob.slice(0, 10),
+                    address: patient.address,
+                    city: patient.city,
+                    state: patient.state,
+                    zip: patient.zip,
+                })
+				setPatient(patient)
+				return patient
+			} catch (error) {
+				console.log(error)
+				throw new Error("Could not find patient with that id.")
+			}
+		},
+		retry: 0,
+		throwOnError: true,
+	})
+
 	const { isPending, mutateAsync } = useMutation({
 		mutationFn: async (values) => {
 			try {
-				// create patient
+				// update patient
 				const data = {
 					fname: values.fname,
 					lname: values.lname,
@@ -82,24 +119,24 @@ const AddPatient = () => {
 						"-" +
 						values.telephone.substr(6),
 					email: values.email,
-					dob: values.dob,
+					dob: new Date(values.dob).toJSON(),
 					address: values.address,
 					city: values.city,
 					state: values.state,
 					zip: values.zip,
 				}
 
-				const res = await axios.post(
-					`${import.meta.env.VITE_PATIENT_API}patients/`,
+				const res = await axios.patch(
+					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`,
 					data
 				)
 				const newPatient = res.data
 				toast({
-					description: `${newPatient.fname} ${newPatient.lname} added to Patients.`,
+					description: `Patient ${newPatient.fname} ${newPatient.lname} updated.`,
 					status: "success",
 				})
-				fetchPatients()
-				navigate(`../${newPatient._id}`, { relative: "path" })
+				// fetchPatients()
+				navigate("..", { relative: "path" })
 			} catch (error) {
 				console.log(error)
 				toast({
@@ -124,7 +161,7 @@ const AddPatient = () => {
 			>
 				<Flex as='header' w='100%' justify='left' align='center'>
 					<Heading as='h3' color='dkGreen' fontSize='20px'>
-						Add New Patient:
+						Edit Patient:
 					</Heading>
 				</Flex>
 				<VStack flex={1} w='100%' overflow='auto' gap='20px' px='15px'>
@@ -488,7 +525,7 @@ const AddPatient = () => {
 											isLoading={isPending}
 											loadingText='Saving...'
 										>
-											Create
+											Update
 										</Button>
 									</Flex>
 								</VStack>
@@ -501,4 +538,4 @@ const AddPatient = () => {
 	)
 }
 
-export default AddPatient
+export default EditPatient

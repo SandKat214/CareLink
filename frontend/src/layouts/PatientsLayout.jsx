@@ -39,14 +39,14 @@ const PatientsLayout = () => {
 				if (searchValue) {
 					const res = await axios.get(
 						import.meta.env.VITE_PATIENT_API +
-							"patients/search/" +
+							"patients/search/query?q=" +
 							searchValue
 					)
 					setPatients(res.data)
 					return res.data
 				}
 
-				// otherwise fetch all patient
+				// otherwise fetch all patients
 				const res = await axios.get(
 					import.meta.env.VITE_PATIENT_API + "patients"
 				)

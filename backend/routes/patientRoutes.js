@@ -17,7 +17,7 @@ router.get("/", getPatients)
 router.get("/:id", getPatient)
 
 // GET by search value
-router.get("/search/:q", getPatientsQ)
+router.get("/search/query", getPatientsQ)
 
 // POST a new patient
 router.post("/", createPatient)

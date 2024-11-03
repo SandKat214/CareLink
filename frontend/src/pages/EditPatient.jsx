@@ -72,8 +72,6 @@ const EditPatient = () => {
 		},
 	})
 
-    console.log(formik.values)
-
 	// fetch patient from db
 	const {} = useQuery({
 		queryKey: ["patient", patientId],
@@ -135,7 +133,7 @@ const EditPatient = () => {
 					description: `Patient ${newPatient.fname} ${newPatient.lname} updated.`,
 					status: "success",
 				})
-				// fetchPatients()
+				fetchPatients()
 				navigate("..", { relative: "path" })
 			} catch (error) {
 				console.log(error)

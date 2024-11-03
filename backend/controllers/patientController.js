@@ -46,7 +46,7 @@ const getPatient = async (req, res) => {
 
 // GET patients by search query
 const getPatientsQ = async (req, res) => {
-	const { q } = req.params
+	const { q } = req.query
 	const regex = new RegExp(q, "i")
 
 	try {

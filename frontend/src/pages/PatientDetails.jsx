@@ -191,7 +191,7 @@ const PatientDetails = () => {
 									DOB:
 								</Heading>
 								<Text as='p' fontSize='16px'>
-									{patient.dob?.slice(0, 10)}
+									{new Date(`${patient.dob?.slice(0, 4)}, ${patient.dob?.slice(5, 7)}, ${patient.dob?.slice(8, 10)}`).toLocaleDateString()}
 								</Text>
 							</HStack>
 							<HStack w='100%'>

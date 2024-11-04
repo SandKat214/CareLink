@@ -17,6 +17,7 @@ import PatientRecord from "./pages/PatientRecord"
 import Error from "./pages/Error"
 import AddPatient from "./pages/AddPatient"
 import EditPatient from "./pages/EditPatient"
+import ApptLayout from "./layouts/ApptLayout"
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -34,6 +35,8 @@ const router = createBrowserRouter(
 						/>
 						<Route path=':patientId/update' element={<EditPatient />} />
 					</Route>
+				</Route>
+				<Route path='appointments' element={<ApptLayout />} >
 				</Route>
 			</Route>
 		</Route>

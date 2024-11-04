@@ -12,56 +12,17 @@ import {
 	ListItem,
 	Spinner,
 	Tooltip,
-	useToast,
 	VStack,
 } from "@chakra-ui/react"
-import { NavLink, Outlet } from "react-router-dom"
+import { NavLink, Outlet, useOutletContext } from "react-router-dom"
 import "@fontsource/lalezar"
-import axios from "axios"
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
 
 // icons
 import { IoIosSearch } from "react-icons/io"
 import { MdAdd } from "react-icons/md"
 
 const PatientsLayout = () => {
-	const toast = useToast()
-	const [searchValue, setSearchValue] = useState("")
-	const [patients, setPatients] = useState([])
-
-	// Fetch patients from db
-	const { isLoading, refetch: fetchPatients } = useQuery({
-		queryKey: ["patients", searchValue],
-		queryFn: async () => {
-			// if value typed in search bar, fetch matching
-			try {
-				if (searchValue) {
-					const res = await axios.get(
-						import.meta.env.VITE_PATIENT_API +
-							"patients/search/query?q=" +
-							searchValue
-					)
-					setPatients(res.data)
-					return res.data
-				}
-
-				// otherwise fetch all patients
-				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "patients"
-				)
-				setPatients(res.data)
-				return res.data
-			} catch (error) {
-				console.log(error)
-				toast({
-					description: error.response.data.error || "Could not retrieve patients from the server.",
-					status: "error",
-				})
-				return error
-			}
-		},
-	})
+	const [ fetchPatients, isLoading, patients, searchValue, setSearchValue ] = useOutletContext()
 
 	return (
 		<Flex as='main' w='100%' h='100%' maxH='100%' overflow='hidden' gap={0}>
@@ -160,13 +121,13 @@ const PatientsLayout = () => {
 				>
 					<Heading
 						as='h2'
-						fontSize='2em'
+						fontSize='1.5em'
 						lineHeight='50%'
 						pt='10px'
 						fontFamily='lalezar'
 						color='background'
 					>
-						Patients
+						Active Patients
 					</Heading>
 					<Tooltip
 						hasArrow

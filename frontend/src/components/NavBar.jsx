@@ -5,6 +5,7 @@ import "@fontsource/lalezar"
 // icons
 import { MdGroups } from "react-icons/md"
 import { IoHome } from "react-icons/io5"
+import { CalendarIcon } from "@chakra-ui/icons"
 
 const NavLinks = () => {
 	return (
@@ -15,10 +16,16 @@ const NavLinks = () => {
 					<Text as='span'>Home</Text>
 				</HStack>
 			</Link>
-			<Link as={NavLink} to='/patients' variant='global'>
+			<Link as={NavLink} to='patients' variant='global'>
 				<HStack gap={2}>
 					<Icon as={MdGroups} boxSize={6} />
 					<Text as='span'>Patients</Text>
+				</HStack>
+			</Link>
+			<Link as={NavLink} to='appointments' variant='global'>
+				<HStack gap={2}>
+					<Icon as={CalendarIcon} boxSize={3.5} />
+					<Text as='span'>Appointments</Text>
 				</HStack>
 			</Link>
 		</Flex>

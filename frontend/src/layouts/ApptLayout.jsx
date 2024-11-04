@@ -6,6 +6,8 @@ import {
 	Flex,
 	Heading,
 	Icon,
+	List,
+	ListItem,
 	SimpleGrid,
 	Spinner,
 	Text,
@@ -15,6 +17,7 @@ import {
 } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { Outlet } from "react-router-dom"
+import { appts } from "../utils/mockup"
 
 // icons
 import { MdAdd } from "react-icons/md"
@@ -49,6 +52,9 @@ const ApptLayout = () => {
 	const [preDates, setPreDates] = useState([])
 	const [dates, setDates] = useState([])
 	const [postDates, setPostDates] = useState([])
+	const [apptObj, setApptObj] = useState({})
+
+	const [isLoading, setIsLoading] = useState(false)
 
 	const setCalendar = () => {
 		if (month < 0 || month > 11) {
@@ -83,8 +89,29 @@ const ApptLayout = () => {
 		setPostDates(datesArr)
 	}
 
+	const builtApptsArray = (apptList) => {
+		const apptsLen = apptList.length
+		const mainObj = {}
+		for (let i = 0; i < apptsLen; ) {
+			let dateIndex = new Date(apptList[i].startEvent).getDate()
+			let tempArr = [apptList[i]]
+			let j = i + 1
+			while (
+				j < apptsLen &&
+				new Date(apptList[j].startEvent).getDate() === dateIndex
+			) {
+				tempArr.push(apptList[j])
+				j++
+			}
+			mainObj[dateIndex] = tempArr
+			i = j
+		}
+		setApptObj(mainObj)
+	}
+
 	useEffect(() => {
 		setCalendar()
+		builtApptsArray(appts)
 	}, [month])
 
 	return (
@@ -117,50 +144,18 @@ const ApptLayout = () => {
 				<VStack
 					as='article'
 					w='100%'
-					p='20px 15%'
+					p='20px 5%'
 					align='flex-start'
 					overflow='auto'
 					boxShadow='inset 2px 2px 10px #343434'
 					flexGrow={1}
 				>
-					{/* {isLoading ? (
-						<Center h='100%' w='100%'>
-							<Spinner color='dkGreen' size='xl' />
-						</Center>
-					) : (
-						<List spacing='15px'>
-							{patients.length > 0 ? (
-								patients.map((patient) => {
-									return (
-										<ListItem key={patient._id}>
-											<Tooltip
-												hasArrow
-												label='Go to patient page'
-												fontSize='12px'
-												placement='auto'
-												mx='10px'
-											>
-												<Link
-													as={NavLink}
-													to={
-														"/patients/" +
-														patient._id
-													}
-													variant='patient'
-												>
-													{patient.lname},{" "}
-													{patient.fname}
-												</Link>
-											</Tooltip>
-										</ListItem>
-									)
-								})
-							) : (
-								<ListItem>No matching patients</ListItem>
-							)}
-						</List>
-					)} */}
-					<Outlet />
+					<Outlet
+						context={{
+							isLoading: isLoading,
+							dailies: apptObj[focusDate] ?? [],
+						}}
+					/>
 				</VStack>
 				<Flex
 					as='footer'
@@ -184,7 +179,7 @@ const ApptLayout = () => {
 					</Heading>
 					<Tooltip
 						hasArrow
-						label='Add new patient'
+						label='Add new appointment for this date'
 						fontSize='12px'
 						placement='auto'
 						m='10px'
@@ -257,7 +252,12 @@ const ApptLayout = () => {
 							)
 						})}
 					</SimpleGrid>
-					<SimpleGrid columns={7} w='100%' flexGrow={1}>
+					<SimpleGrid
+						columns={7}
+						w='100%'
+						flexGrow={1}
+						fontSize='12px'
+					>
 						{preDates.map((preDate) => {
 							return (
 								<Box
@@ -266,7 +266,11 @@ const ApptLayout = () => {
 									border='1px solid lightgray'
 									color='lightgray'
 								>
-									<Flex w='100%' justify='right' p='10px 10px 0 5px'>
+									<Flex
+										w='100%'
+										justify='right'
+										p='10px 10px 0 5px'
+									>
 										{preDate}
 									</Flex>
 								</Box>
@@ -278,28 +282,53 @@ const ApptLayout = () => {
 							return (
 								<Box
 									key={index}
-									flexGrow={1}
 									border='1px solid #343434'
+									p='10px'
 									_hover={{
-                                        boxShadow: 'inset 5px 5px #8D0000, inset -5px -5px #8D0000',
-                                    }}
-                                    onClick={() => {
-                                        setFocusDate(date)
-                                    }}
-                                    boxShadow={focusDate === date ? 'inset 5px 5px #8D0000, inset -5px -5px #8D0000' : ''}
+										boxShadow:
+											"inset 5px 5px #8D0000, inset -5px -5px #8D0000",
+									}}
+									onClick={() => {
+										setFocusDate(date)
+									}}
+									boxShadow={
+										focusDate === date
+											? "inset 5px 5px #8D0000, inset -5px -5px #8D0000"
+											: ""
+									}
 								>
-                                    <Flex w='100%' justify='right' p='10px 10px 0 5px'>
-                                        {today.year === year && today.month === month && today.date === date ? (
-                                            <Circle bg='ltGreen' color='char' p='5px 12px' >
-                                                {date}
-                                            </Circle>
-                                        ) : (
-                                            <Box>
-                                                {date}
-                                            </Box>
-                                            
-                                        )}
+									<Flex w='100%' justify='right' p='5px'>
+										{today.year === year &&
+										today.month === month &&
+										today.date === date ? (
+											<Circle
+												bg='ltGreen'
+												color='char'
+												p='5px 12px'
+											>
+												{date}
+											</Circle>
+										) : (
+											<Box>{date}</Box>
+										)}
 									</Flex>
+									<List spacing='2px' variant='event'>
+										{apptObj[date]?.map((appt, index) => {
+											return (
+												<ListItem key={index}>
+													{`${new Date(
+														appt.startEvent
+													).toLocaleTimeString(
+														"en-US",
+														{
+															hour: "2-digit",
+															minute: "2-digit",
+														}
+													)} - ${appt.title}`}
+												</ListItem>
+											)
+										})}
+									</List>
 								</Box>
 							)
 						})}
@@ -312,7 +341,11 @@ const ApptLayout = () => {
 									border='1px solid lightgray'
 									color='lightgray'
 								>
-									<Flex w='100%' justify='right' p='10px 10px 0 5px'>
+									<Flex
+										w='100%'
+										justify='right'
+										p='10px 10px 0 5px'
+									>
 										{postDate}
 									</Flex>
 								</Box>

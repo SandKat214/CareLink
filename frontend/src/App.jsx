@@ -18,6 +18,7 @@ import Error from "./pages/Error"
 import AddPatient from "./pages/AddPatient"
 import EditPatient from "./pages/EditPatient"
 import ApptLayout from "./layouts/ApptLayout"
+import DailyAppts from "./pages/DailyAppts"
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -33,10 +34,14 @@ const router = createBrowserRouter(
 							path=':patientId/record'
 							element={<PatientRecord />}
 						/>
-						<Route path=':patientId/update' element={<EditPatient />} />
+						<Route
+							path=':patientId/update'
+							element={<EditPatient />}
+						/>
 					</Route>
 				</Route>
-				<Route path='appointments' element={<ApptLayout />} >
+				<Route path='appointments' element={<ApptLayout />}>
+					<Route index element={<DailyAppts />} />
 				</Route>
 			</Route>
 		</Route>

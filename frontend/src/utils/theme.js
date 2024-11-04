@@ -236,6 +236,33 @@ const theme = extendTheme({
 			},
 		},
 
+		List: {
+			variants: {
+				event: {
+					container: {
+						w: "100%",
+						h: "40px",
+						overflow: "hidden",
+						display: "flex",
+						flexDirection: "column",
+					},
+					item: {
+						bg: "dkGreen",
+						color: "background",
+						borderRadius: "40px",
+						minH: "5px",
+						maxH: "fit-content",
+						w: "fit-content",
+						maxW: "100%",
+						whiteSpace: "nowrap",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						p: "0 5px",
+					},
+				},
+			},
+		},
+
 		Menu: {
 			variants: {
 				record: {
@@ -285,7 +312,7 @@ const theme = extendTheme({
 						bg: "background",
 						fontSize: "13px",
 						h: "fit-content",
-                        textOverflow: 'ellipsis',
+						textOverflow: "ellipsis",
 						_hover: {
 							border: "3px solid #0F737E",
 						},

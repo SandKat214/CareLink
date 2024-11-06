@@ -241,7 +241,7 @@ const theme = extendTheme({
 				event: {
 					container: {
 						w: "100%",
-						h: "40px",
+						h: "35px",
 						overflow: "hidden",
 						display: "flex",
 						flexDirection: "column",

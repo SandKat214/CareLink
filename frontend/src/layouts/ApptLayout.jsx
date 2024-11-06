@@ -257,14 +257,16 @@ const ApptLayout = () => {
 						w='100%'
 						flexGrow={1}
 						fontSize='12px'
+						autoRows='1fr'
 					>
 						{preDates.map((preDate) => {
 							return (
 								<Box
 									key={preDate}
-									flexGrow={1}
 									border='1px solid lightgray'
 									color='lightgray'
+									minH='0'
+									overflow='clip'
 								>
 									<Flex
 										w='100%'
@@ -284,6 +286,8 @@ const ApptLayout = () => {
 									key={index}
 									border='1px solid #343434'
 									p='10px'
+									minH='0'
+									overflow='clip'
 									_hover={{
 										boxShadow:
 											"inset 5px 5px #8D0000, inset -5px -5px #8D0000",
@@ -312,6 +316,7 @@ const ApptLayout = () => {
 											<Box>{date}</Box>
 										)}
 									</Flex>
+									<Flex flexGrow={1}>
 									<List spacing='2px' variant='event'>
 										{apptObj[date]?.map((appt, index) => {
 											return (
@@ -329,6 +334,7 @@ const ApptLayout = () => {
 											)
 										})}
 									</List>
+									</Flex>
 								</Box>
 							)
 						})}
@@ -337,9 +343,10 @@ const ApptLayout = () => {
 							return (
 								<Box
 									key={postDate}
-									flexGrow={1}
 									border='1px solid lightgray'
 									color='lightgray'
+									minH='0'
+									overflow='clip'
 								>
 									<Flex
 										w='100%'

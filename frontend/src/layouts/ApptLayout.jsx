@@ -266,12 +266,12 @@ const ApptLayout = () => {
 									border='1px solid lightgray'
 									color='lightgray'
 									minH='0'
-									overflow='clip'
+									p='5px 10px'
 								>
 									<Flex
 										w='100%'
 										justify='right'
-										p='10px 10px 0 5px'
+										p='5px'
 									>
 										{preDate}
 									</Flex>
@@ -285,7 +285,7 @@ const ApptLayout = () => {
 								<Box
 									key={index}
 									border='1px solid #343434'
-									p='10px'
+									p='5px 10px'
 									minH='0'
 									overflow='clip'
 									_hover={{
@@ -346,12 +346,12 @@ const ApptLayout = () => {
 									border='1px solid lightgray'
 									color='lightgray'
 									minH='0'
-									overflow='clip'
+									p='5px 10px'
 								>
 									<Flex
 										w='100%'
 										justify='right'
-										p='10px 10px 0 5px'
+										p='5px'
 									>
 										{postDate}
 									</Flex>

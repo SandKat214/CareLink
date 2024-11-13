@@ -19,6 +19,7 @@ import AddPatient from "./pages/AddPatient"
 import EditPatient from "./pages/EditPatient"
 import ApptLayout from "./layouts/ApptLayout"
 import DailyAppts from "./pages/DailyAppts"
+import AddAppt from "./pages/AddAppt"
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -42,6 +43,7 @@ const router = createBrowserRouter(
 				</Route>
 				<Route path='appointments' element={<ApptLayout />}>
 					<Route index element={<DailyAppts />} />
+					<Route path='new' element={<AddAppt />} />
 				</Route>
 			</Route>
 		</Route>

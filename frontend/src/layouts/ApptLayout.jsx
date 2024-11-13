@@ -15,15 +15,20 @@ import {
 	useToast,
 	VStack,
 } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
-import { Outlet } from "react-router-dom"
-import { appts } from "../utils/mockup"
+import { useState } from "react"
+import { NavLink, Outlet, useOutletContext } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
+import axios from "axios"
 
 // icons
 import { MdAdd } from "react-icons/md"
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 
 const ApptLayout = () => {
+	const { patients } = useOutletContext()
+	const toast = useToast()
+
+	const userID = 1
 	const curDate = new Date()
 	const today = {
 		year: curDate.getFullYear(),
@@ -49,19 +54,13 @@ const ApptLayout = () => {
 	const [focusDate, setFocusDate] = useState(today.date)
 	const [year, setYear] = useState(today.year)
 	const [month, setMonth] = useState(today.month)
+
 	const [preDates, setPreDates] = useState([])
 	const [dates, setDates] = useState([])
 	const [postDates, setPostDates] = useState([])
-	const [apptObj, setApptObj] = useState({})
-
-	const [isLoading, setIsLoading] = useState(false)
+	const [appts, setAppts] = useState({})
 
 	const setCalendar = () => {
-		if (month < 0 || month > 11) {
-			const newDate = new Date(year, month, 1)
-			setYear(newDate.getFullYear())
-			setMonth(newDate.getMonth())
-		}
 		let firstDay = new Date(year, month, 1).getDay() // day index of 1st day of month
 		let lastDate = new Date(year, month + 1, 0).getDate() // last date of month
 		let lastDay = new Date(year, month, lastDate).getDay() // day index of last date
@@ -89,9 +88,9 @@ const ApptLayout = () => {
 		setPostDates(datesArr)
 	}
 
-	const builtApptsArray = (apptList) => {
+	const buildAppts = (apptList) => {
 		const apptsLen = apptList.length
-		const mainObj = {}
+		const apptObj = {}
 		for (let i = 0; i < apptsLen; ) {
 			let dateIndex = new Date(apptList[i].startEvent).getDate()
 			let tempArr = [apptList[i]]
@@ -103,22 +102,64 @@ const ApptLayout = () => {
 				tempArr.push(apptList[j])
 				j++
 			}
-			mainObj[dateIndex] = tempArr
+			apptObj[dateIndex] = tempArr
 			i = j
 		}
-		setApptObj(mainObj)
+		setAppts(apptObj)
 	}
 
-	useEffect(() => {
-		setCalendar()
-		builtApptsArray(appts)
-	}, [month])
+	const handleNewMonth = (newMonth) => {
+		if (newMonth < 0 || newMonth > 11) {
+			const newDate = new Date(year, newMonth, 1)
+			setYear(newDate.getFullYear())
+			setMonth(newDate.getMonth())
+		} else {
+			setMonth(newMonth)
+		}
+	}
+
+	const { isLoading, refetch: fetchAppts } = useQuery({
+		queryKey: ["appts", month],
+		queryFn: async () => {
+			// if month changes, fetch month's appts
+			setCalendar()
+			let fromMonth = month + 1
+			let toMonth = fromMonth + 1
+			let fromYear = year
+			let toYear = year
+
+			if (fromMonth == 12) {
+				toMonth = 1
+				toYear = fromYear + 1
+			}
+
+			try {
+				const res = await axios.get(
+					import.meta.env.VITE_EVENTS_API +
+						userID +
+						`/dates?start=${fromYear}-${fromMonth}-01&end=${toYear}-${toMonth}-01`
+				)
+				buildAppts(res.data)
+				return res.data
+			} catch (error) {
+				console.log(error)
+				toast({
+					description:
+						error.response.data.error ||
+						"Could not retrieve appointments from event service.",
+					status: "error",
+				})
+				return error
+			}
+		},
+	})
 
 	return (
 		<Flex as='main' w='100%' h='100%' maxH='100%' overflow='hidden' gap={0}>
 			<VStack
 				as='section'
 				w='30%'
+				minW='30%'
 				borderTop='1px solid #FFFF'
 				borderBottom='1px solid #FFFF'
 				gap={0}
@@ -152,8 +193,12 @@ const ApptLayout = () => {
 				>
 					<Outlet
 						context={{
-							isLoading: isLoading,
-							dailies: apptObj[focusDate] ?? [],
+							isLoading,
+							dailies: appts[focusDate] ?? [],
+							patients,
+							focusDate,
+							year,
+							month,
 						}}
 					/>
 				</VStack>
@@ -185,8 +230,8 @@ const ApptLayout = () => {
 						m='10px'
 					>
 						<Button
-							// as={NavLink}
-							// to='new'
+							as={NavLink}
+							to='new'
 							variant='ltAction'
 							leftIcon={<Icon as={MdAdd} boxSize={5} />}
 						>
@@ -216,7 +261,7 @@ const ApptLayout = () => {
 							_hover={{ color: "ltGreen" }}
 							boxSize={8}
 							onClick={() => {
-								setMonth(month - 1)
+								handleNewMonth(month - 1)
 							}}
 						/>
 						<Heading
@@ -232,7 +277,7 @@ const ApptLayout = () => {
 							_hover={{ color: "ltGreen" }}
 							boxSize={8}
 							onClick={() => {
-								setMonth(month + 1)
+								handleNewMonth(month + 1)
 							}}
 						/>
 					</Flex>
@@ -268,11 +313,7 @@ const ApptLayout = () => {
 									minH='0'
 									p='5px 10px'
 								>
-									<Flex
-										w='100%'
-										justify='right'
-										p='5px'
-									>
+									<Flex w='100%' justify='right' p='5px'>
 										{preDate}
 									</Flex>
 								</Box>
@@ -317,23 +358,23 @@ const ApptLayout = () => {
 										)}
 									</Flex>
 									<Flex flexGrow={1}>
-									<List spacing='2px' variant='event'>
-										{apptObj[date]?.map((appt, index) => {
-											return (
-												<ListItem key={index}>
-													{`${new Date(
-														appt.startEvent
-													).toLocaleTimeString(
-														"en-US",
-														{
-															hour: "2-digit",
-															minute: "2-digit",
-														}
-													)} - ${appt.title}`}
-												</ListItem>
-											)
-										})}
-									</List>
+										<List spacing='2px' variant='event'>
+											{appts[date]?.map((appt, index) => {
+												return (
+													<ListItem key={index}>
+														{`${new Date(
+															appt.startEvent
+														).toLocaleTimeString(
+															"en-US",
+															{
+																hour: "2-digit",
+																minute: "2-digit",
+															}
+														)} - ${appt.title}`}
+													</ListItem>
+												)
+											})}
+										</List>
 									</Flex>
 								</Box>
 							)
@@ -348,11 +389,7 @@ const ApptLayout = () => {
 									minH='0'
 									p='5px 10px'
 								>
-									<Flex
-										w='100%'
-										justify='right'
-										p='5px'
-									>
+									<Flex w='100%' justify='right' p='5px'>
 										{postDate}
 									</Flex>
 								</Box>

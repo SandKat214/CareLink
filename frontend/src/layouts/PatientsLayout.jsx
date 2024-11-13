@@ -22,7 +22,8 @@ import { IoIosSearch } from "react-icons/io"
 import { MdAdd } from "react-icons/md"
 
 const PatientsLayout = () => {
-	const [ fetchPatients, isLoading, patients, searchValue, setSearchValue ] = useOutletContext()
+	const { fetchPatients, isLoading, patients, searchValue, setSearchValue } =
+		useOutletContext()
 
 	return (
 		<Flex as='main' w='100%' h='100%' maxH='100%' overflow='hidden' gap={0}>

@@ -26,7 +26,7 @@ const AddPatient = () => {
 
 	const navigate = useNavigate()
 	const toast = useToast()
-	const [fetchPatients] = useOutletContext()
+	const { fetchPatients } = useOutletContext()
 
 	const formik = useFormik({
 		initialValues: {

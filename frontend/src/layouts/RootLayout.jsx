@@ -38,7 +38,9 @@ const RootLayout = () => {
 			} catch (error) {
 				console.log(error)
 				toast({
-					description: error.response.data.error || "Could not retrieve patients from the server.",
+					description:
+						error.response.data.error ||
+						"Could not retrieve patients from the server.",
 					status: "error",
 				})
 				return error
@@ -55,7 +57,15 @@ const RootLayout = () => {
 			gap={0}
 		>
 			<NavBar />
-			<Outlet context={[fetchPatients, isLoading, patients, searchValue, setSearchValue]} />
+			<Outlet
+				context={{
+					fetchPatients,
+					isLoading,
+					patients,
+					searchValue,
+					setSearchValue,
+				}}
+			/>
 			<Footer />
 		</VStack>
 	)

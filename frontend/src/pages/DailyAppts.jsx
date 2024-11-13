@@ -31,9 +31,9 @@ const DailyAppts = () => {
 			) : (
 				<List spacing='15px' w='100%'>
 					{dailies.length > 0 ? (
-						dailies.map((appt) => {
+						dailies.map((appt, index) => {
 							return (
-								<>
+								<div key={index}>
 									<ListItem
 										key={appt._id}
 										display='flex'
@@ -120,7 +120,7 @@ const DailyAppts = () => {
 										</Link>
 									</ListItem>
 									<Divider borderColor='dkGreen' />
-								</>
+								</div>
 							)
 						})
 					) : (

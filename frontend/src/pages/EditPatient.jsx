@@ -26,11 +26,11 @@ const EditPatient = () => {
 	const maxDate = new Date().toLocaleDateString("en-CA")
 
 	const { patientId } = useParams()
-    const navigate = useNavigate()
+	const navigate = useNavigate()
 	const toast = useToast()
-	const [fetchPatients] = useOutletContext()
+	const { fetchPatients } = useOutletContext()
 
-    const [patient, setPatient] = useState()
+	const [patient, setPatient] = useState()
 
 	const formik = useFormik({
 		initialValues: {
@@ -80,18 +80,18 @@ const EditPatient = () => {
 				const res = await axios.get(
 					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`
 				)
-                const patient = res.data
-                formik.setValues({
-                    fname: patient.fname,
-                    lname: patient.lname,
-                    telephone: patient.telephone.split("-").join(""),
-                    email: patient.email,
-                    dob: patient.dob.slice(0, 10),
-                    address: patient.address,
-                    city: patient.city,
-                    state: patient.state,
-                    zip: patient.zip,
-                })
+				const patient = res.data
+				formik.setValues({
+					fname: patient.fname,
+					lname: patient.lname,
+					telephone: patient.telephone.split("-").join(""),
+					email: patient.email,
+					dob: patient.dob.slice(0, 10),
+					address: patient.address,
+					city: patient.city,
+					state: patient.state,
+					zip: patient.zip,
+				})
 				setPatient(patient)
 				return patient
 			} catch (error) {

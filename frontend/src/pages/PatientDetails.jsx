@@ -36,7 +36,7 @@ import { ArrowBackIcon } from "@chakra-ui/icons"
 
 const PatientDetails = () => {
 	const { patientId } = useParams()
-	const [fetchPatients] = useOutletContext()
+	const { fetchPatients } = useOutletContext()
 	const navigate = useNavigate()
 	const { isOpen, onClose, onOpen } = useDisclosure()
 	const toast = useToast()
@@ -164,7 +164,7 @@ const PatientDetails = () => {
 					</Heading>
 					<Button
 						as={RRLink}
-						to="update"
+						to='update'
 						variant='dkAction'
 						leftIcon={<Icon as={MdModeEdit} />}
 					>
@@ -191,7 +191,15 @@ const PatientDetails = () => {
 									DOB:
 								</Heading>
 								<Text as='p' fontSize='16px'>
-									{new Date(`${patient.dob?.slice(0, 4)}, ${patient.dob?.slice(5, 7)}, ${patient.dob?.slice(8, 10)}`).toLocaleDateString()}
+									{new Date(
+										`${patient.dob?.slice(
+											0,
+											4
+										)}, ${patient.dob?.slice(
+											5,
+											7
+										)}, ${patient.dob?.slice(8, 10)}`
+									).toLocaleDateString()}
 								</Text>
 							</HStack>
 							<HStack w='100%'>
@@ -222,8 +230,13 @@ const PatientDetails = () => {
 							</HStack>
 						</VStack>
 						<VStack gap='5px'>
-							<Flex w='100%' justify='left' >
-								<Heading as='h5' fontSize='16px' color='dkGreen' fontWeight='bold'>
+							<Flex w='100%' justify='left'>
+								<Heading
+									as='h5'
+									fontSize='16px'
+									color='dkGreen'
+									fontWeight='bold'
+								>
 									Address:
 								</Heading>
 							</Flex>
@@ -271,7 +284,7 @@ const PatientDetails = () => {
 							>
 								<Button
 									as={RRLink}
-									to="record"
+									to='record'
 									variant='dkAction'
 									leftIcon={<Icon as={IoEye} />}
 								>

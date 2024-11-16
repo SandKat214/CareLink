@@ -118,10 +118,11 @@ const ApptLayout = () => {
 		}
 	}
 
+	// fetch appointment events from event microservice
 	const { isLoading, refetch: fetchAppts } = useQuery({
 		queryKey: ["appts", month],
 		queryFn: async () => {
-			// if month changes, fetch month's appts
+			// if month changes, check for year change
 			setCalendar()
 			let fromMonth = month + 1
 			let toMonth = fromMonth + 1
@@ -133,6 +134,7 @@ const ApptLayout = () => {
 				toYear = fromYear + 1
 			}
 
+			// fetch set month's appointments
 			try {
 				const res = await axios.get(
 					import.meta.env.VITE_EVENTS_API +

@@ -135,6 +135,7 @@ const ApptLayout = () => {
 
 	// handle year changes
 	const handleNewMonth = (newMonth) => {
+		setAppts({})
 		if (newMonth < 0 || newMonth > 11) {
 			const newDate = new Date(year, newMonth, 1)
 			setYear(newDate.getFullYear())

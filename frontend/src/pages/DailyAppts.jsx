@@ -3,7 +3,6 @@ import {
 	Center,
 	Divider,
 	Flex,
-	HStack,
 	Icon,
 	Link,
 	List,
@@ -11,16 +10,54 @@ import {
 	Spinner,
 	Text,
 	Tooltip,
+	useDisclosure,
+	useToast,
 } from "@chakra-ui/react"
 import { Link as RRLink, useOutletContext } from "react-router-dom"
+import { useMutation } from "@tanstack/react-query"
+import { useState } from "react"
+import axios from "axios"
+
+// components
+import AlertModal from "../components/AlertModal"
 
 // icons
 import { FaTrashCan } from "react-icons/fa6"
 import { RiMailFill } from "react-icons/ri"
 import { ArrowForwardIcon } from "@chakra-ui/icons"
 
+
 const DailyAppts = () => {
-	const { isLoading, dailies } = useOutletContext()
+	const { fetchAppts, isLoading, dailies } = useOutletContext()
+	const toast = useToast()
+	const { isOpen, onClose, onOpen } = useDisclosure()
+	const [idToCancel, setIdToCancel] = useState("")
+
+	// cancel appointment
+	const { isPending, mutateAsync: deleteAppt } = useMutation({
+		mutationFn: async () => {
+			try {
+				await axios.delete(
+					`${import.meta.env.VITE_EVENTS_API}/${idToCancel}`
+				)
+				toast({
+					description: "Appointment cancelled.",
+					status: "success",
+				})
+				fetchAppts()
+				setIdToCancel("")
+			} catch (error) {
+				console.log(error)
+				toast({
+					description:
+						error.response.data.error ||
+						"Error cancelling appointment.",
+					status: "error",
+				})
+				return error
+			}
+		},
+	})
 
 	return (
 		<>
@@ -30,6 +67,12 @@ const DailyAppts = () => {
 				</Center>
 			) : (
 				<List spacing='15px' w='100%'>
+					<AlertModal
+						isOpen={isOpen}
+						onClose={onClose}
+						message={"Appointment cancellation CANNOT be undone. To reschedule an appointment, first cancel it and then add a new appointment."}
+						callBack={deleteAppt}
+					/>
 					{dailies.length > 0 ? (
 						dailies.map((appt, index) => {
 							return (
@@ -84,6 +127,12 @@ const DailyAppts = () => {
 													<Button
 														variant='alertAction'
 														p='5px'
+														onClick={() => {
+															setIdToCancel(appt._id)
+															onOpen()
+														}}
+														isLoading={isPending}
+														loadingText='...'
 													>
 														<Icon
 															as={FaTrashCan}
@@ -93,31 +142,43 @@ const DailyAppts = () => {
 												</Tooltip>
 											</Flex>
 										</Flex>
-										<Link
-											as={RRLink}
-											to={
-												"/patients/" + appt.attendees[0]
-											}
-											variant='patient'
-										>
-											<Tooltip
-												hasArrow
-												label='Go to patient page'
-												fontSize='12px'
-												placement='auto'
-												mx='10px'
+										{appt.attendees ? 
+											<Link
+												as={RRLink}
+												to={
+													"/patients/" + appt.attendees[0]
+												}
+												variant='patient'
 											>
-												<Flex
-													w='fit-content'
-													gap='10px'
-													p='3px 10px'
-													align='center'
+												<Tooltip
+													hasArrow
+													label='Go to patient page'
+													fontSize='12px'
+													placement='auto'
+													mx='10px'
 												>
-													<ArrowForwardIcon />
-													{appt.title}
-												</Flex>
-											</Tooltip>
-										</Link>
+													<Flex
+														w='fit-content'
+														gap='10px'
+														p='3px 10px'
+														align='center'
+													>
+														<ArrowForwardIcon />
+														{appt.title}
+													</Flex>
+												</Tooltip>
+											</Link>
+											:
+											<Flex
+												w='fit-content'
+												gap='10px'
+												p='3px 10px'
+												align='center'
+											>
+												<ArrowForwardIcon />
+												{appt.title}
+											</Flex>
+										}
 									</ListItem>
 									<Divider borderColor='dkGreen' />
 								</div>

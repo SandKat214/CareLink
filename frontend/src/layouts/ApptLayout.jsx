@@ -10,7 +10,6 @@ import {
 	ListItem,
 	SimpleGrid,
 	Spinner,
-	Text,
 	Tooltip,
 	useToast,
 	VStack,
@@ -60,6 +59,21 @@ const ApptLayout = () => {
 	const [postDates, setPostDates] = useState([])
 	const [appts, setAppts] = useState({})
 
+	const [loading, setLoading] = useState(false)
+
+	// fetch patient from db
+	const fetchPatient = async (patientId) => {
+		try {
+			const res = await axios.get(
+				import.meta.env.VITE_PATIENT_API + "patients/" + patientId
+			)
+			return res.data
+		} catch (error) {
+			return null
+		}
+	}
+
+	// calculate calendar dates
 	const setCalendar = () => {
 		let firstDay = new Date(year, month, 1).getDay() // day index of 1st day of month
 		let lastDate = new Date(year, month + 1, 0).getDate() // last date of month
@@ -88,26 +102,38 @@ const ApptLayout = () => {
 		setPostDates(datesArr)
 	}
 
-	const buildAppts = (apptList) => {
+	// build appointment arrays that key to calendar date
+	const buildAppts = async (apptList) => {
+		setLoading(true)			// start loading spinners
 		const apptsLen = apptList.length
 		const apptObj = {}
-		for (let i = 0; i < apptsLen; ) {
-			let dateIndex = new Date(apptList[i].startEvent).getDate()
-			let tempArr = [apptList[i]]
-			let j = i + 1
+		for (let i = 0, j = i; i < apptsLen; i = j) {
+			let realDate = new Date(apptList[i].startEvent)
+			if (realDate.getMonth() !== month) {
+				j++
+			}
+			let dateIndex = realDate.getDate()
+			let tempArr = []
 			while (
 				j < apptsLen &&
 				new Date(apptList[j].startEvent).getDate() === dateIndex
 			) {
+				// make sure patient is active
+				let patient = await fetchPatient(apptList[j].attendees[0])
+				if (!patient) {
+					apptList[j].title = apptList[j].title + " - inactive patient"
+					apptList[j].attendees = null
+				}
 				tempArr.push(apptList[j])
 				j++
 			}
 			apptObj[dateIndex] = tempArr
-			i = j
 		}
 		setAppts(apptObj)
+		setLoading(false)			// cancel spinners
 	}
 
+	// handle year changes
 	const handleNewMonth = (newMonth) => {
 		if (newMonth < 0 || newMonth > 11) {
 			const newDate = new Date(year, newMonth, 1)
@@ -139,7 +165,7 @@ const ApptLayout = () => {
 				const res = await axios.get(
 					import.meta.env.VITE_EVENTS_API +
 						userID +
-						`/dates?start=${fromYear}-${fromMonth}-01&end=${toYear}-${toMonth}-01`
+						`/dates?start=${fromYear}-${fromMonth}-01&end=${toYear}-${toMonth}-02`
 				)
 				buildAppts(res.data)
 				return res.data
@@ -195,6 +221,7 @@ const ApptLayout = () => {
 				>
 					<Outlet
 						context={{
+							fetchAppts,
 							isLoading,
 							dailies: appts[focusDate] ?? [],
 							patients,
@@ -360,23 +387,29 @@ const ApptLayout = () => {
 										)}
 									</Flex>
 									<Flex flexGrow={1}>
-										<List spacing='2px' variant='event'>
-											{appts[date]?.map((appt, index) => {
-												return (
-													<ListItem key={index}>
-														{`${new Date(
-															appt.startEvent
-														).toLocaleTimeString(
-															"en-US",
-															{
-																hour: "2-digit",
-																minute: "2-digit",
-															}
-														)} - ${appt.title}`}
-													</ListItem>
-												)
-											})}
-										</List>
+										{loading ?
+											<Center h='100%' w='100%'>
+												<Spinner color='dkGreen' size='xl' />
+											</Center>
+											:
+											<List spacing='2px' variant='event'>
+												{appts[date]?.map((appt, index) => {
+													return (
+														<ListItem key={index}>
+															{`${new Date(
+																appt.startEvent
+															).toLocaleTimeString(
+																"en-US",
+																{
+																	hour: "2-digit",
+																	minute: "2-digit",
+																}
+															)} - ${appt.title}`}
+														</ListItem>
+													)
+												})}
+											</List>
+										}
 									</Flex>
 								</Box>
 							)

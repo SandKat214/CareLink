@@ -113,7 +113,7 @@ const AddPatient = () => {
 	})
 
 	return (
-		<VStack p='40px 60px' gap='15px' h='100%' maxH='100%' width='100%'>
+		<VStack p='40px 60px' gap='15px' h='100%' maxH='100%' w='100%'>
 			<VStack
 				as='section'
 				w='100%'
@@ -152,7 +152,7 @@ const AddPatient = () => {
 											First Name:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='text'
@@ -185,7 +185,7 @@ const AddPatient = () => {
 											Last Name:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='text'
@@ -215,10 +215,10 @@ const AddPatient = () => {
 									</FormControl>
 									<FormControl>
 										<FormLabel variant='patient'>
-											Telephone:
+											Telephone:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='text'
@@ -249,10 +249,10 @@ const AddPatient = () => {
 									</FormControl>
 									<FormControl>
 										<FormLabel variant='patient'>
-											Email:
+											Email:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='email'
@@ -284,10 +284,10 @@ const AddPatient = () => {
 								<VStack gap='15px' w='300px' align='flex-start'>
 									<FormControl w='fit-content'>
 										<FormLabel variant='patient'>
-											DOB:
+											DOB:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='date'
@@ -320,7 +320,7 @@ const AddPatient = () => {
 											Address:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='text'
@@ -353,7 +353,7 @@ const AddPatient = () => {
 											City:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='text'
@@ -384,10 +384,10 @@ const AddPatient = () => {
 									<Flex gap='30px'>
 										<FormControl w='150px'>
 											<FormLabel variant='patient'>
-												State:
+												State:{" "}
 												<Text as='span' color='alert'>
 													*
-												</Text>{" "}
+												</Text>
 											</FormLabel>
 											<Select
 												variant='patient'
@@ -395,7 +395,7 @@ const AddPatient = () => {
 												value={formik.values.state}
 												onChange={formik.handleChange}
 												onBlur={formik.handleBlur}
-												placeholder='Patient state.'
+												placeholder='Patient state...'
 												isRequired
 											>
 												{states.map((state) => {
@@ -427,10 +427,10 @@ const AddPatient = () => {
 										</FormControl>
 										<FormControl w='110px'>
 											<FormLabel variant='patient'>
-												Zip Code:
+												Zip Code:{" "}
 												<Text as='span' color='alert'>
 													*
-												</Text>{" "}
+												</Text>
 											</FormLabel>
 											<Input
 												type='text'

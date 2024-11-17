@@ -100,8 +100,8 @@ const PatientDetails = () => {
 					description: "Patient successfully deleted.",
 					status: "success",
 				})
-				fetchPatients()
 				navigate("..", { relative: "path" })
+				fetchPatients()
 			} catch (error) {
 				console.log(error)
 				toast({
@@ -120,7 +120,7 @@ const PatientDetails = () => {
 			<AlertModal
 				isOpen={isOpen}
 				onClose={onClose}
-				message={`This action will permanently remove all personal information and record data associated with this patient. Once confirmed, this CANNOT be undone.`}
+				message={"This action will permanently remove all personal information and record data associated with this patient. Once confirmed, this CANNOT be undone."}
 				callBack={deletePatient}
 			/>
 			<Flex w='100%' justify='space-between'>

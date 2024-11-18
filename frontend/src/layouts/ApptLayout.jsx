@@ -109,20 +109,28 @@ const ApptLayout = () => {
 		const apptObj = {}
 		for (let i = 0, j = i; i < apptsLen; i = j) {
 			let realDate = new Date(apptList[i].startEvent)
+
+			// slight overlap on months due to UTC convention in database
 			if (realDate.getMonth() !== month) {
 				j++
 			}
+
 			let dateIndex = realDate.getDate()
 			let tempArr = []
 			while (
 				j < apptsLen &&
 				new Date(apptList[j].startEvent).getDate() === dateIndex
 			) {
-				// make sure patient is active
+				// determine if patient is active
 				let patient = await fetchPatient(apptList[j].attendees[0])
 				if (!patient) {
+					// mark inactive
 					apptList[j].title = apptList[j].title + " - inactive patient"
 					apptList[j].attendees = null
+					apptList[j].email = null
+				} else {
+					// otherwise save email for notifications
+					apptList[j].email = patient.email
 				}
 				tempArr.push(apptList[j])
 				j++
@@ -133,9 +141,11 @@ const ApptLayout = () => {
 		setLoading(false)			// cancel spinners
 	}
 
-	// handle year changes
+	// handle month change
 	const handleNewMonth = (newMonth) => {
-		setAppts({})
+		setAppts({})				// reset appointments object
+		
+		// handle year change
 		if (newMonth < 0 || newMonth > 11) {
 			const newDate = new Date(year, newMonth, 1)
 			setYear(newDate.getFullYear())

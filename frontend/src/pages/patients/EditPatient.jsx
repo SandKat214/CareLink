@@ -110,7 +110,6 @@ const EditPatient = () => {
 			try {
 				// update patient
 				const data = {
-					userID: "1",
 					fname: values.fname,
 					lname: values.lname,
 					telephone:
@@ -125,7 +124,6 @@ const EditPatient = () => {
 					city: values.city,
 					state: values.state,
 					zip: values.zip,
-					image: null,
 				}
 
 				const res = await axios.patch(

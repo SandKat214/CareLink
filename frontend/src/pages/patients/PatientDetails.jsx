@@ -45,11 +45,12 @@ const PatientDetails = () => {
 	const toast = useToast()
 	const [records, setRecords] = useState([])
 	const [patient, setPatient] = useState({})
+	const [file, setFile] = useState(null)
 
 	const imageRef = useRef(null)
 
 	// fetch patient from db
-	const {} = useQuery({
+	const { isLoading: loadingPatient, refetch: fetchPatient } = useQuery({
 		queryKey: ["patient", patientId],
 		queryFn: async () => {
 			try {
@@ -68,7 +69,7 @@ const PatientDetails = () => {
 	})
 
 	// fetch patient's records from db
-	const { isLoading, refetch: fetchRecords } = useQuery({
+	const { isLoading: loadingPatients, refetch: fetchRecords } = useQuery({
 		queryKey: ["records", patientId],
 		queryFn: async () => {
 			try {
@@ -92,27 +93,68 @@ const PatientDetails = () => {
 	})
 
 	// delete patient and records from db
-	const { isPending, mutateAsync: deletePatient } = useMutation({
+	const { isPending: pendingDelete, mutateAsync: deletePatient } =
+		useMutation({
+			mutationFn: async () => {
+				try {
+					await axios.delete(
+						`${
+							import.meta.env.VITE_PATIENT_API
+						}patients/${patientId}`
+					)
+					await axios.delete(
+						`${
+							import.meta.env.VITE_PATIENT_API
+						}records/${patientId}`
+					)
+					toast({
+						description: "Patient successfully deleted.",
+						status: "success",
+					})
+					navigate("..", { relative: "path" })
+					fetchPatients()
+				} catch (error) {
+					console.log(error)
+					toast({
+						description:
+							error.response.data.error ||
+							"Error deleting patient data.",
+						status: "error",
+					})
+					return error
+				}
+			},
+		})
+
+	// image microservice
+	const { isPending: pendingURL, mutateAsync: imageUpload } = useMutation({
 		mutationFn: async () => {
 			try {
-				await axios.delete(
-					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`
+				const data = new FormData()
+				data.append("file", file)
+				data.append("storageID", patientId)
+
+				// upload image for url
+				const imageRes = await axios.post(
+					`${import.meta.env.VITE_IMAGES_API}`,
+					data
 				)
-				await axios.delete(
-					`${import.meta.env.VITE_PATIENT_API}records/${patientId}`
+				
+				// add url to patient information in database
+				await axios.patch(
+					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`,
+					{ image: imageRes.data }
 				)
+				fetchPatient()
 				toast({
-					description: "Patient successfully deleted.",
+					description: `Image saved for ${patient.fname} ${patient.lname}.`,
 					status: "success",
 				})
-				navigate("..", { relative: "path" })
-				fetchPatients()
 			} catch (error) {
 				console.log(error)
 				toast({
 					description:
-						error.response.data.error ||
-						"Error deleting patient data.",
+						error.response.data.message || "Error uploading image.",
 					status: "error",
 				})
 				return error
@@ -146,7 +188,7 @@ const PatientDetails = () => {
 					onClick={() => {
 						onOpen()
 					}}
-					isLoading={isPending}
+					isLoading={pendingDelete}
 					loadingText='Deleting...'
 				>
 					Delete
@@ -207,36 +249,54 @@ const PatientDetails = () => {
 									imageRef.current?.click()
 								}}
 							>
-								<Image
-									boxSize='200px'
-									borderRadius='md'
-									objectFit='cover'
-									objectPosition='center top'
-									src={
-										patient.image ?? "/patient-default.png"
-									}
-								/>
-								<Center
-									boxSize='200px'
-									borderRadius='md'
-									position='relative'
-									top='-200px'
-									left='0'
-									bg='rgba(0,0,0,0.5)'
-									justify='right'
-									border='4px solid #00FFD9'
-									opacity={0}
-									_hover={{ opacity: 1 }}
-								>
-									<Icon
-										as={MdModeEdit}
-										color='ltGreen'
-										boxSize={9}
-									/>
-								</Center>
+								{pendingURL || loadingPatient ?
+									<Center h='100%' w='100%'>
+										<Spinner color='dkGreen' size='xl' />
+									</Center>
+									: <>
+										<Image
+											boxSize='200px'
+											borderRadius='md'
+											border='4px solid #0F737E'
+											objectFit='cover'
+											objectPosition='center top'
+											src={
+												patient.image ??
+												"https://res.cloudinary.com/da2twkx0h/image/upload/v1731970283/patient_default.png"
+											}
+										/>
+										<Center
+											boxSize='200px'
+											borderRadius='md'
+											position='relative'
+											top='-200px'
+											left='0'
+											bg='rgba(0,0,0,0.5)'
+											justify='right'
+											border='4px solid #00FFD9'
+											opacity={0}
+											_hover={{ opacity: 1 }}
+										>
+											<Icon
+												as={MdModeEdit}
+												color='ltGreen'
+												boxSize={9}
+											/>
+										</Center>
+									</>
+								}
 							</Box>
 						</Tooltip>
-						<Input type='file' display='none' ref={imageRef} />
+						<Input
+							type='file'
+							display='none'
+							ref={imageRef}
+							accept='image/*'
+							onChange={(e) => {
+								setFile(e.target.files[0])
+								imageUpload()
+							}}
+						/>
 						<VStack align='flex-start' gap='10px'>
 							<HStack w='100%'>
 								<Heading
@@ -349,7 +409,7 @@ const PatientDetails = () => {
 								</Button>
 							</Tooltip>
 						</Flex>
-						{isLoading ? (
+						{loadingPatients ? (
 							<Center h='100%' w='100%'>
 								<Spinner color='dkGreen' size='xl' />
 							</Center>

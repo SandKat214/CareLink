@@ -191,6 +191,7 @@ const ApptLayout = () => {
 				return error
 			}
 		},
+		retry: 0,
 	})
 
 	return (

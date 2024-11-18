@@ -30,11 +30,13 @@ import { ArrowForwardIcon } from "@chakra-ui/icons"
 const DailyAppts = () => {
 	const { fetchAppts, isLoading, dailies } = useOutletContext()
 	const toast = useToast()
-	const { isOpen, onClose, onOpen } = useDisclosure()
+	const { isOpen: isDel, onClose: delClose, onOpen: delOpen } = useDisclosure()
+	const { isOpen: isEmail, onClose: emailClose, onOpen: emailOpen } = useDisclosure()
 	const [idToCancel, setIdToCancel] = useState("")
+	const [apptToRem, setApptToRem] = useState({})
 
 	// cancel appointment
-	const { isPending, mutateAsync: deleteAppt } = useMutation({
+	const { isPending: delPending, mutateAsync: deleteAppt } = useMutation({
 		mutationFn: async () => {
 			try {
 				await axios.delete(
@@ -45,7 +47,6 @@ const DailyAppts = () => {
 					status: "success",
 				})
 				fetchAppts()
-				setIdToCancel("")
 			} catch (error) {
 				console.log(error)
 				toast({
@@ -55,8 +56,36 @@ const DailyAppts = () => {
 					status: "error",
 				})
 				return error
+			} finally {
+				setIdToCancel("")
 			}
 		},
+	})
+
+	// email patient reminder
+	const { isPending: emailPending, mutateAsync: emailRem } = useMutation({
+		mutationFn: async () => {
+			try {
+				const date = new Date(apptToRem.startEvent).toLocaleDateString("en-US")
+				const startTime = new Date(apptToRem.startEvent).toLocaleTimeString("en-US", {hour: "2-digit", minute: "2-digit",})
+				const endTime = new Date(apptToRem.endEvent).toLocaleTimeString("en-US", {hour: "2-digit", minute: "2-digit",})
+				const data = {
+					fromName: "CareLink",
+					toName: apptToRem.title,
+					replyEmail: "user@carelink.site",
+					toEmail: apptToRem.email,
+					subject: "Appointment reminder from CareLink",
+					message: `This is a reminder that you have an appointment on ${date}, from ${startTime} to ${endTime}.`
+				}
+				await axios.post(`${import.meta.env.VITE_NOTIFY_API}`, data)
+				toast({ description: "Reminder sent.", status: 'success'})
+			} catch (error) {
+				console.log(error)
+				toast({ description: error.response.data.message || "Error sending reminder.", status: 'error'})
+			} finally {
+				setApptToRem({})
+			}
+		}
 	})
 
 	return (
@@ -68,10 +97,16 @@ const DailyAppts = () => {
 			) : (
 				<List spacing='15px' w='100%'>
 					<AlertModal
-						isOpen={isOpen}
-						onClose={onClose}
+						isOpen={isDel}
+						onClose={delClose}
 						message={"Appointment cancellation CANNOT be undone. To reschedule an appointment, first cancel it and then add a new appointment."}
 						callBack={deleteAppt}
+					/>
+					<AlertModal
+						isOpen={isEmail}
+						onClose={emailClose}
+						message={"This action sends an appointment notification to the patient email on file."}
+						callBack={emailRem}
 					/>
 					{dailies.length > 0 ? (
 						dailies.map((appt, index) => {
@@ -100,23 +135,30 @@ const DailyAppts = () => {
 												minute: "2-digit",
 											})}`}</Text>
 											<Flex gap='15px' align='center'>
-												{/* <Tooltip
-													hasArrow
-													label='Send reminder'
-													fontSize='12px'
-													placement='auto'
-													mx='10px'
-												>
-													<Button
-														variant='dkAction'
-														p='5px'
+												{appt.email &&
+													<Tooltip
+														hasArrow
+														label='Send reminder'
+														fontSize='12px'
+														placement='auto'
+														mx='10px'
 													>
-														<Icon
-															as={RiMailFill}
-															boxSize={3}
-														/>
-													</Button>
-												</Tooltip> */}
+														<Button
+															variant='dkAction'
+															p='5px'
+															onClick={() => {
+																setApptToRem(appt)
+																emailOpen()
+															}}
+															isLoading={emailPending}
+														>
+															<Icon
+																as={RiMailFill}
+																boxSize={3}
+															/>
+														</Button>
+													</Tooltip>
+												}
 												<Tooltip
 													hasArrow
 													label='Cancel appointment'
@@ -129,10 +171,9 @@ const DailyAppts = () => {
 														p='5px'
 														onClick={() => {
 															setIdToCancel(appt._id)
-															onOpen()
+															delOpen()
 														}}
-														isLoading={isPending}
-														loadingText='...'
+														isLoading={delPending}
 													>
 														<Icon
 															as={FaTrashCan}

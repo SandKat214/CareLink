@@ -66,7 +66,7 @@ const PatientRecord = () => {
 		}),
 		onSubmit: async (values) => {
 			mutateAsync(values)
-		}
+		},
 	})
 
 	// fetch patient from db
@@ -142,7 +142,8 @@ const PatientRecord = () => {
 			} catch (error) {
 				console.log(error)
 				toast({
-					description: error.response.data.error || "Error saving submission.",
+					description:
+						error.response.data.error || "Error saving submission.",
 					status: "error",
 				})
 				return error
@@ -359,7 +360,9 @@ const PatientRecord = () => {
 																	variant='record'
 																	name='notes'
 																	isRequired
-																	onChange={formik.handleChange}
+																	onChange={
+																		formik.handleChange
+																	}
 																/>
 																{formik.errors
 																	.notes && (
@@ -438,7 +441,7 @@ const PatientRecord = () => {
 												key={record._id}
 												id={record._id}
 											>
-												<AccordionItem >
+												<AccordionItem>
 													{({ isExpanded }) => (
 														<>
 															<Tooltip
@@ -530,7 +533,9 @@ const PatientRecord = () => {
 																					variant='record'
 																					name='notes'
 																					isRequired
-																					onChange={formik.handleChange}
+																					onChange={
+																						formik.handleChange
+																					}
 																				/>
 																				{formik
 																					.errors

@@ -11,38 +11,36 @@ import {
 	useToast,
 	VStack,
 } from "@chakra-ui/react"
-import { useNavigate, useOutletContext, useParams } from "react-router-dom"
-import { states } from "../utils/states"
+import { useNavigate, useOutletContext } from "react-router-dom"
 import { useFormik } from "formik"
 import * as Yup from "yup"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
+
+// utils
+import { states } from "../../utils/states"
 
 // icons
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons"
-import { useState } from "react"
 
-const EditPatient = () => {
+const AddPatient = () => {
 	const maxDate = new Date().toLocaleDateString("en-CA")
 
-	const { patientId } = useParams()
 	const navigate = useNavigate()
 	const toast = useToast()
 	const { fetchPatients } = useOutletContext()
 
-	const [patient, setPatient] = useState()
-
 	const formik = useFormik({
 		initialValues: {
-			fname: patient?.fname || "",
-			lname: patient?.lname || "",
-			telephone: patient?.telephone.split("-").join("") || "",
-			email: patient?.email || "",
-			dob: patient?.dob || "",
-			address: patient?.dob || "",
-			city: patient?.city || "",
-			state: patient?.state || "",
-			zip: patient?.zip || "",
+			fname: "",
+			lname: "",
+			telephone: "",
+			email: "",
+			dob: "",
+			address: "",
+			city: "",
+			state: "",
+			zip: "",
 		},
 		validationSchema: Yup.object({
 			fname: Yup.string().required("First name is required."),
@@ -72,42 +70,12 @@ const EditPatient = () => {
 		},
 	})
 
-	// fetch patient from db
-	const {} = useQuery({
-		queryKey: ["patient", patientId],
-		queryFn: async () => {
-			try {
-				const res = await axios.get(
-					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`
-				)
-				const patient = res.data
-				formik.setValues({
-					fname: patient.fname,
-					lname: patient.lname,
-					telephone: patient.telephone.split("-").join(""),
-					email: patient.email,
-					dob: patient.dob.slice(0, 10),
-					address: patient.address,
-					city: patient.city,
-					state: patient.state,
-					zip: patient.zip,
-				})
-				setPatient(patient)
-				return patient
-			} catch (error) {
-				console.log(error)
-				throw new Error("Could not find patient with that id.")
-			}
-		},
-		retry: 0,
-		throwOnError: true,
-	})
-
 	const { isPending, mutateAsync } = useMutation({
 		mutationFn: async (values) => {
 			try {
-				// update patient
+				// create patient
 				const data = {
+					userID: "1",
 					fname: values.fname,
 					lname: values.lname,
 					telephone:
@@ -117,24 +85,25 @@ const EditPatient = () => {
 						"-" +
 						values.telephone.substr(6),
 					email: values.email,
-					dob: new Date(values.dob).toJSON(),
+					dob: values.dob,
 					address: values.address,
 					city: values.city,
 					state: values.state,
 					zip: values.zip,
+					image: null,
 				}
 
-				const res = await axios.patch(
-					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`,
+				const res = await axios.post(
+					`${import.meta.env.VITE_PATIENT_API}patients/`,
 					data
 				)
 				const newPatient = res.data
 				toast({
-					description: `Patient ${newPatient.fname} ${newPatient.lname} updated.`,
+					description: `${newPatient.fname} ${newPatient.lname} added to Patients.`,
 					status: "success",
 				})
 				fetchPatients()
-				navigate("..", { relative: "path" })
+				navigate(`../${newPatient._id}`, { relative: "path" })
 			} catch (error) {
 				console.log(error)
 				toast({
@@ -148,7 +117,7 @@ const EditPatient = () => {
 	})
 
 	return (
-		<VStack p='40px 60px' gap='15px' h='100%' maxH='100%' width='100%'>
+		<VStack p='40px 60px' gap='15px' h='100%' maxH='100%' w='100%'>
 			<VStack
 				as='section'
 				w='100%'
@@ -159,7 +128,7 @@ const EditPatient = () => {
 			>
 				<Flex as='header' w='100%' justify='left' align='center'>
 					<Heading as='h3' color='dkGreen' fontSize='20px'>
-						Edit Patient:
+						Add New Patient:
 					</Heading>
 				</Flex>
 				<VStack flex={1} w='100%' overflow='auto' gap='20px' px='15px'>
@@ -187,7 +156,7 @@ const EditPatient = () => {
 											First Name:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='text'
@@ -220,7 +189,7 @@ const EditPatient = () => {
 											Last Name:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='text'
@@ -250,10 +219,10 @@ const EditPatient = () => {
 									</FormControl>
 									<FormControl>
 										<FormLabel variant='patient'>
-											Telephone:
+											Telephone:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='text'
@@ -284,10 +253,10 @@ const EditPatient = () => {
 									</FormControl>
 									<FormControl>
 										<FormLabel variant='patient'>
-											Email:
+											Email:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='email'
@@ -319,10 +288,10 @@ const EditPatient = () => {
 								<VStack gap='15px' w='300px' align='flex-start'>
 									<FormControl w='fit-content'>
 										<FormLabel variant='patient'>
-											DOB:
+											DOB:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='date'
@@ -355,7 +324,7 @@ const EditPatient = () => {
 											Address:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='text'
@@ -388,7 +357,7 @@ const EditPatient = () => {
 											City:{" "}
 											<Text as='span' color='alert'>
 												*
-											</Text>{" "}
+											</Text>
 										</FormLabel>
 										<Input
 											type='text'
@@ -419,10 +388,10 @@ const EditPatient = () => {
 									<Flex gap='30px'>
 										<FormControl w='150px'>
 											<FormLabel variant='patient'>
-												State:
+												State:{" "}
 												<Text as='span' color='alert'>
 													*
-												</Text>{" "}
+												</Text>
 											</FormLabel>
 											<Select
 												variant='patient'
@@ -430,7 +399,7 @@ const EditPatient = () => {
 												value={formik.values.state}
 												onChange={formik.handleChange}
 												onBlur={formik.handleBlur}
-												placeholder='Patient state.'
+												placeholder='Patient state...'
 												isRequired
 											>
 												{states.map((state) => {
@@ -462,10 +431,10 @@ const EditPatient = () => {
 										</FormControl>
 										<FormControl w='110px'>
 											<FormLabel variant='patient'>
-												Zip Code:
+												Zip Code:{" "}
 												<Text as='span' color='alert'>
 													*
-												</Text>{" "}
+												</Text>
 											</FormLabel>
 											<Input
 												type='text'
@@ -523,7 +492,7 @@ const EditPatient = () => {
 											isLoading={isPending}
 											loadingText='Saving...'
 										>
-											Update
+											Create
 										</Button>
 									</Flex>
 								</VStack>
@@ -536,4 +505,4 @@ const EditPatient = () => {
 	)
 }
 
-export default EditPatient
+export default AddPatient

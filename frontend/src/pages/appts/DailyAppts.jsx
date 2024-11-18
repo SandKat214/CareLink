@@ -19,19 +19,26 @@ import { useState } from "react"
 import axios from "axios"
 
 // components
-import AlertModal from "../components/AlertModal"
+import AlertModal from "../../components/AlertModal"
 
 // icons
 import { FaTrashCan } from "react-icons/fa6"
 import { RiMailFill } from "react-icons/ri"
 import { ArrowForwardIcon } from "@chakra-ui/icons"
 
-
 const DailyAppts = () => {
 	const { fetchAppts, isLoading, dailies } = useOutletContext()
 	const toast = useToast()
-	const { isOpen: isDel, onClose: delClose, onOpen: delOpen } = useDisclosure()
-	const { isOpen: isEmail, onClose: emailClose, onOpen: emailOpen } = useDisclosure()
+	const {
+		isOpen: isDel,
+		onClose: delClose,
+		onOpen: delOpen,
+	} = useDisclosure()
+	const {
+		isOpen: isEmail,
+		onClose: emailClose,
+		onOpen: emailOpen,
+	} = useDisclosure()
 	const [idToCancel, setIdToCancel] = useState("")
 	const [apptToRem, setApptToRem] = useState({})
 
@@ -66,26 +73,41 @@ const DailyAppts = () => {
 	const { isPending: emailPending, mutateAsync: emailRem } = useMutation({
 		mutationFn: async () => {
 			try {
-				const date = new Date(apptToRem.startEvent).toLocaleDateString("en-US")
-				const startTime = new Date(apptToRem.startEvent).toLocaleTimeString("en-US", {hour: "2-digit", minute: "2-digit",})
-				const endTime = new Date(apptToRem.endEvent).toLocaleTimeString("en-US", {hour: "2-digit", minute: "2-digit",})
+				const date = new Date(apptToRem.startEvent).toLocaleDateString(
+					"en-US"
+				)
+				const startTime = new Date(
+					apptToRem.startEvent
+				).toLocaleTimeString("en-US", {
+					hour: "2-digit",
+					minute: "2-digit",
+				})
+				const endTime = new Date(apptToRem.endEvent).toLocaleTimeString(
+					"en-US",
+					{ hour: "2-digit", minute: "2-digit" }
+				)
 				const data = {
 					fromName: "CareLink",
 					toName: apptToRem.title,
 					replyEmail: "user@carelink.site",
 					toEmail: apptToRem.email,
 					subject: "Appointment reminder from CareLink",
-					message: `This is a reminder that you have an appointment on ${date}, from ${startTime} to ${endTime}.`
+					message: `This is a reminder that you have an appointment on ${date}, from ${startTime} to ${endTime}.`,
 				}
 				await axios.post(`${import.meta.env.VITE_NOTIFY_API}`, data)
-				toast({ description: "Reminder sent.", status: 'success'})
+				toast({ description: "Reminder sent.", status: "success" })
 			} catch (error) {
 				console.log(error)
-				toast({ description: error.response.data.message || "Error sending reminder.", status: 'error'})
+				toast({
+					description:
+						error.response.data.message ||
+						"Error sending reminder.",
+					status: "error",
+				})
 			} finally {
 				setApptToRem({})
 			}
-		}
+		},
 	})
 
 	return (
@@ -99,13 +121,17 @@ const DailyAppts = () => {
 					<AlertModal
 						isOpen={isDel}
 						onClose={delClose}
-						message={"Appointment cancellation CANNOT be undone. To reschedule an appointment, first cancel it and then add a new appointment."}
+						message={
+							"Appointment cancellation CANNOT be undone. To reschedule an appointment, first cancel it and then add a new appointment."
+						}
 						callBack={deleteAppt}
 					/>
 					<AlertModal
 						isOpen={isEmail}
 						onClose={emailClose}
-						message={"This action sends an appointment notification to the patient email on file."}
+						message={
+							"This action sends an appointment notification to the patient email on file."
+						}
 						callBack={emailRem}
 					/>
 					{dailies.length > 0 ? (
@@ -135,7 +161,7 @@ const DailyAppts = () => {
 												minute: "2-digit",
 											})}`}</Text>
 											<Flex gap='15px' align='center'>
-												{appt.email &&
+												{appt.email && (
 													<Tooltip
 														hasArrow
 														label='Send reminder'
@@ -147,10 +173,14 @@ const DailyAppts = () => {
 															variant='dkAction'
 															p='5px'
 															onClick={() => {
-																setApptToRem(appt)
+																setApptToRem(
+																	appt
+																)
 																emailOpen()
 															}}
-															isLoading={emailPending}
+															isLoading={
+																emailPending
+															}
 														>
 															<Icon
 																as={RiMailFill}
@@ -158,7 +188,7 @@ const DailyAppts = () => {
 															/>
 														</Button>
 													</Tooltip>
-												}
+												)}
 												<Tooltip
 													hasArrow
 													label='Cancel appointment'
@@ -170,7 +200,9 @@ const DailyAppts = () => {
 														variant='alertAction'
 														p='5px'
 														onClick={() => {
-															setIdToCancel(appt._id)
+															setIdToCancel(
+																appt._id
+															)
 															delOpen()
 														}}
 														isLoading={delPending}
@@ -183,11 +215,12 @@ const DailyAppts = () => {
 												</Tooltip>
 											</Flex>
 										</Flex>
-										{appt.attendees ? 
+										{appt.attendees ? (
 											<Link
 												as={RRLink}
 												to={
-													"/patients/" + appt.attendees[0]
+													"/patients/" +
+													appt.attendees[0]
 												}
 												variant='patient'
 											>
@@ -209,7 +242,7 @@ const DailyAppts = () => {
 													</Flex>
 												</Tooltip>
 											</Link>
-											:
+										) : (
 											<Flex
 												w='fit-content'
 												gap='10px'
@@ -219,7 +252,7 @@ const DailyAppts = () => {
 												<ArrowForwardIcon />
 												{appt.title}
 											</Flex>
-										}
+										)}
 									</ListItem>
 									<Divider borderColor='dkGreen' />
 								</div>

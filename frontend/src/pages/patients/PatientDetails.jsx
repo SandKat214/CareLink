@@ -1,10 +1,13 @@
 import {
+	Box,
 	Button,
 	Center,
 	Flex,
 	Heading,
 	HStack,
 	Icon,
+	Image,
+	Input,
 	Link,
 	List,
 	ListItem,
@@ -22,11 +25,11 @@ import {
 	useParams,
 } from "react-router-dom"
 import axios from "axios"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 // components
-import AlertModal from "../components/AlertModal"
+import AlertModal from "../../components/AlertModal"
 
 // icons
 import { FaTrashCan } from "react-icons/fa6"
@@ -42,6 +45,8 @@ const PatientDetails = () => {
 	const toast = useToast()
 	const [records, setRecords] = useState([])
 	const [patient, setPatient] = useState({})
+
+	const imageRef = useRef(null)
 
 	// fetch patient from db
 	const {} = useQuery({
@@ -120,7 +125,9 @@ const PatientDetails = () => {
 			<AlertModal
 				isOpen={isOpen}
 				onClose={onClose}
-				message={"This action will permanently remove all personal information and record data associated with this patient. Once confirmed, this CANNOT be undone."}
+				message={
+					"This action will permanently remove all personal information and record data associated with this patient. Once confirmed, this CANNOT be undone."
+				}
 				callBack={deletePatient}
 			/>
 			<Flex w='100%' justify='space-between'>
@@ -180,7 +187,57 @@ const PatientDetails = () => {
 					px='15px'
 				>
 					<Flex as='article' p='0 40px' gap='70px'>
-						<VStack justify='right' gap='10px'>
+						<Tooltip
+							hasArrow
+							label={
+								patient.image
+									? "Edit patient image"
+									: "Add patient image"
+							}
+							fontSize='12px'
+							placement='auto'
+							m='5px'
+						>
+							<Box
+								boxSize='200px'
+								cursor='pointer'
+								borderRadius='md'
+								onClick={(e) => {
+									e.stopPropagation()
+									imageRef.current?.click()
+								}}
+							>
+								<Image
+									boxSize='200px'
+									borderRadius='md'
+									objectFit='cover'
+									objectPosition='center top'
+									src={
+										patient.image ?? "/patient-default.png"
+									}
+								/>
+								<Center
+									boxSize='200px'
+									borderRadius='md'
+									position='relative'
+									top='-200px'
+									left='0'
+									bg='rgba(0,0,0,0.5)'
+									justify='right'
+									border='4px solid #00FFD9'
+									opacity={0}
+									_hover={{ opacity: 1 }}
+								>
+									<Icon
+										as={MdModeEdit}
+										color='ltGreen'
+										boxSize={9}
+									/>
+								</Center>
+							</Box>
+						</Tooltip>
+						<Input type='file' display='none' ref={imageRef} />
+						<VStack align='flex-start' gap='10px'>
 							<HStack w='100%'>
 								<Heading
 									as='h5'
@@ -228,24 +285,24 @@ const PatientDetails = () => {
 									{patient.email}
 								</Text>
 							</HStack>
-						</VStack>
-						<VStack gap='5px'>
-							<Flex w='100%' justify='left'>
-								<Heading
-									as='h5'
-									fontSize='16px'
-									color='dkGreen'
-									fontWeight='bold'
-								>
-									Address:
-								</Heading>
-							</Flex>
-							<Text as='p'>{patient.address}</Text>
-							<HStack gap='5px'>
-								<Text>{patient.city},</Text>
-								<Text>{patient.state}</Text>
-								<Text>{patient.zip}</Text>
-							</HStack>
+							<VStack gap='5px'>
+								<Flex w='100%' justify='left'>
+									<Heading
+										as='h5'
+										fontSize='16px'
+										color='dkGreen'
+										fontWeight='bold'
+									>
+										Address:
+									</Heading>
+								</Flex>
+								<Text as='p'>{patient.address}</Text>
+								<HStack gap='5px'>
+									<Text>{patient.city},</Text>
+									<Text>{patient.state}</Text>
+									<Text>{patient.zip}</Text>
+								</HStack>
+							</VStack>
 						</VStack>
 					</Flex>
 					<VStack

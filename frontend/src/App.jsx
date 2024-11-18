@@ -10,16 +10,16 @@ import RootLayout from "./layouts/RootLayout"
 import PatientsLayout from "./layouts/PatientsLayout"
 
 // Pages
-import Patients from "./pages/Patients"
-import PatientDetails from "./pages/PatientDetails"
+import Patients from "./pages/patients/Patients"
+import PatientDetails from "./pages/patients/PatientDetails"
 import Home from "./pages/Home"
-import PatientRecord from "./pages/PatientRecord"
+import PatientRecord from "./pages/patients/PatientRecord"
 import Error from "./pages/Error"
-import AddPatient from "./pages/AddPatient"
-import EditPatient from "./pages/EditPatient"
+import AddPatient from "./pages/patients/AddPatient"
+import EditPatient from "./pages/patients/EditPatient"
 import ApptLayout from "./layouts/ApptLayout"
-import DailyAppts from "./pages/DailyAppts"
-import AddAppt from "./pages/AddAppt"
+import DailyAppts from "./pages/appts/DailyAppts"
+import AddAppt from "./pages/appts/AddAppt"
 
 const router = createBrowserRouter(
 	createRoutesFromElements(

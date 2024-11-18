@@ -1,4 +1,16 @@
-import { Button, Flex, FormControl, FormHelperText, FormLabel, Heading, Input, Select, Text, useToast, VStack } from "@chakra-ui/react"
+import {
+	Button,
+	Flex,
+	FormControl,
+	FormHelperText,
+	FormLabel,
+	Heading,
+	Input,
+	Select,
+	Text,
+	useToast,
+	VStack,
+} from "@chakra-ui/react"
 import { useNavigate, useOutletContext } from "react-router-dom"
 import { useFormik } from "formik"
 import * as Yup from "yup"
@@ -22,11 +34,11 @@ const AddAppt = () => {
 		validationSchema: Yup.object({
 			patient: Yup.string().required("Patient is required."),
 			start: Yup.string().required("Start time is required."),
-			end: Yup.string().required("End time is required.")
+			end: Yup.string().required("End time is required."),
 		}),
 		onSubmit: async (values) => {
 			mutateAsync(values)
-		}
+		},
 	})
 
 	// add appointment event
@@ -34,18 +46,35 @@ const AddAppt = () => {
 		mutationFn: async (values) => {
 			try {
 				// get patient info
-				const patient = await axios.get(import.meta.env.VITE_PATIENT_API + "patients/" + values.patient)
+				const patient = await axios.get(
+					import.meta.env.VITE_PATIENT_API +
+						"patients/" +
+						values.patient
+				)
 
 				// create event
 				const data = {
 					userID: "1",
 					attendees: [values.patient],
-					startEvent: new Date(year, month, focusDate, values.start.slice(0, 2), values.start.slice(3, 5)).toJSON(),
-					endEvent: new Date(year, month, focusDate, values.end.slice(0, 2), values.end.slice(3, 5)).toJSON(),
+					startEvent: new Date(
+						year,
+						month,
+						focusDate,
+						values.start.slice(0, 2),
+						values.start.slice(3, 5)
+					).toJSON(),
+					endEvent: new Date(
+						year,
+						month,
+						focusDate,
+						values.end.slice(0, 2),
+						values.end.slice(3, 5)
+					).toJSON(),
 					title: `${patient.data.fname} ${patient.data.lname}`,
 				}
 				const res = await axios.post(
-					`${import.meta.env.VITE_EVENTS_API}`, data
+					`${import.meta.env.VITE_EVENTS_API}`,
+					data
 				)
 				const newAppt = res.data
 				toast({
@@ -58,7 +87,8 @@ const AddAppt = () => {
 				console.log(error)
 				toast({
 					description:
-						error.response.data.error || "Error saving appointment.",
+						error.response.data.error ||
+						"Error saving appointment.",
 					status: "error",
 				})
 				return error
@@ -82,16 +112,21 @@ const AddAppt = () => {
 						Required Fields *
 					</Text>
 				</VStack>
-				<VStack as='article' w='100%' gap='30px' align='flex-start' >
-					<form style={{width: '100%'}} onSubmit={(e) => {
-						e.preventDefault()
-						formik.handleSubmit()
-					}}>
-						<VStack gap='20px' w='100%' >
+				<VStack as='article' w='100%' gap='30px' align='flex-start'>
+					<form
+						style={{ width: "100%" }}
+						onSubmit={(e) => {
+							e.preventDefault()
+							formik.handleSubmit()
+						}}
+					>
+						<VStack gap='20px' w='100%'>
 							<FormControl>
 								<FormLabel variant='patient'>
 									Patient:{" "}
-									<Text as='span' color='alert'>*</Text>
+									<Text as='span' color='alert'>
+										*
+									</Text>
 								</FormLabel>
 								<Select
 									w='fit-content'
@@ -105,51 +140,100 @@ const AddAppt = () => {
 								>
 									{patients.map((patient) => {
 										return (
-											<option key={patient._id} value={patient._id} >
+											<option
+												key={patient._id}
+												value={patient._id}
+											>
 												{`${patient.fname} ${patient.lname}`}
 											</option>
 										)
 									})}
 								</Select>
-								<FormHelperText m='0px' fontSize='12px' color={formik.touched.patient && formik.errors.patient ? "alert" : "char"} >
-									{formik.touched.patient && formik.errors.patient ? formik.errors.patient : "Choose patient."}
+								<FormHelperText
+									m='0px'
+									fontSize='12px'
+									color={
+										formik.touched.patient &&
+										formik.errors.patient
+											? "alert"
+											: "char"
+									}
+								>
+									{formik.touched.patient &&
+									formik.errors.patient
+										? formik.errors.patient
+										: "Choose patient."}
 								</FormHelperText>
 							</FormControl>
 							<FormControl>
-								<FormLabel variant='patient' >
+								<FormLabel variant='patient'>
 									Start Time:{" "}
 									<Text as='span' color='alert'>
 										*
 									</Text>
 								</FormLabel>
-								<Input type='time' w='fit-content'  variant='patient' name='start' max={formik.values.end} value={formik.values.start} onChange={formik.handleChange} onBlur={formik.handleBlur} isRequired />
-								<FormHelperText m='0px' fontSize='12px' color={formik.touched.start && formik.errors.start ? "alert" : "char"} >
-									{formik.touched.start && formik.errors.start ? formik.errors.start : "Start time."}
+								<Input
+									type='time'
+									w='fit-content'
+									variant='patient'
+									name='start'
+									max={formik.values.end}
+									value={formik.values.start}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+									isRequired
+								/>
+								<FormHelperText
+									m='0px'
+									fontSize='12px'
+									color={
+										formik.touched.start &&
+										formik.errors.start
+											? "alert"
+											: "char"
+									}
+								>
+									{formik.touched.start && formik.errors.start
+										? formik.errors.start
+										: "Start time."}
 								</FormHelperText>
 							</FormControl>
 							<FormControl>
-								<FormLabel variant='patient' >
+								<FormLabel variant='patient'>
 									End Time:{" "}
 									<Text as='span' color='alert'>
 										*
 									</Text>
 								</FormLabel>
-								<Input type='time' w='fit-content' variant='patient' name='end' min={formik.values.start} value={formik.values.end} onChange={formik.handleChange} onBlur={formik.handleBlur} isRequired />
-								<FormHelperText m='0px' fontSize='12px' color={formik.touched.end && formik.errors.end ? "alert" : "char"} >
-									{formik.touched.end && formik.errors.end ? formik.errors.end : "End time."}
+								<Input
+									type='time'
+									w='fit-content'
+									variant='patient'
+									name='end'
+									min={formik.values.start}
+									value={formik.values.end}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+									isRequired
+								/>
+								<FormHelperText
+									m='0px'
+									fontSize='12px'
+									color={
+										formik.touched.end && formik.errors.end
+											? "alert"
+											: "char"
+									}
+								>
+									{formik.touched.end && formik.errors.end
+										? formik.errors.end
+										: "End time."}
 								</FormHelperText>
 							</FormControl>
-							<Flex
-								w='100%'
-								justify='right'
-								gap='20px'
-								py='20px'
-							>
+							<Flex w='100%' justify='right' gap='20px' py='20px'>
 								<Button
 									variant='alertAction'
-									leftIcon={
-										<CloseIcon boxSize={2.5} />
-									}
+									leftIcon={<CloseIcon boxSize={2.5} />}
 									onClick={() => {
 										formik.resetForm()
 										navigate("..", {

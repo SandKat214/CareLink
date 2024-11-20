@@ -56,7 +56,7 @@ const EditPatient = () => {
 			email: Yup.string()
 				.email("Must be a valid email.")
 				.required("Email is required"),
-			dob: Yup.string().required("Birthdate is required."),
+			dob: Yup.date().required("Birthdate is required."),
 			address: Yup.string().required("Address is required."),
 			city: Yup.string().required("City is requried."),
 			state: Yup.string().required("State is required."),
@@ -105,6 +105,7 @@ const EditPatient = () => {
 		throwOnError: true,
 	})
 
+	// edit patient details
 	const { isPending, mutateAsync } = useMutation({
 		mutationFn: async (values) => {
 			try {

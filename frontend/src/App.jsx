@@ -8,16 +8,16 @@ import {
 // Layouts
 import RootLayout from "./layouts/RootLayout"
 import PatientsLayout from "./layouts/PatientsLayout"
+import ApptLayout from "./layouts/ApptLayout"
 
 // Pages
+import Home from "./pages/Home"
+import Error from "./pages/Error"
 import Patients from "./pages/patients/Patients"
 import PatientDetails from "./pages/patients/PatientDetails"
-import Home from "./pages/Home"
 import PatientRecord from "./pages/patients/PatientRecord"
-import Error from "./pages/Error"
 import AddPatient from "./pages/patients/AddPatient"
 import EditPatient from "./pages/patients/EditPatient"
-import ApptLayout from "./layouts/ApptLayout"
 import DailyAppts from "./pages/appts/DailyAppts"
 import AddAppt from "./pages/appts/AddAppt"
 

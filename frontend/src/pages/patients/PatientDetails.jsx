@@ -50,7 +50,7 @@ const PatientDetails = () => {
 	const imageRef = useRef(null)
 
 	// fetch patient from db
-	const { isLoading: loadingPatient, refetch: fetchPatient } = useQuery({
+	const { isFetching: loadingPatient, refetch: fetchPatient } = useQuery({
 		queryKey: ["patient", patientId],
 		queryFn: async () => {
 			try {
@@ -69,7 +69,7 @@ const PatientDetails = () => {
 	})
 
 	// fetch patient's records from db
-	const { isLoading: loadingPatients, refetch: fetchRecords } = useQuery({
+	const { isLoading: loadingRecords, refetch: fetchRecords } = useQuery({
 		queryKey: ["records", patientId],
 		queryFn: async () => {
 			try {
@@ -182,277 +182,299 @@ const PatientDetails = () => {
 				>
 					Back to overview
 				</Button>
-				<Button
-					variant='alertAction'
-					leftIcon={<Icon as={FaTrashCan} />}
-					onClick={() => {
-						onOpen()
-					}}
-					isLoading={pendingDelete}
-					loadingText='Deleting...'
+				<Tooltip
+					hasArrow
+					label='Delete patient'
+					fontSize='12px'
+					placement='auto'
+					m='5px'
 				>
-					Delete
-				</Button>
-			</Flex>
-			<VStack
-				as='section'
-				w='100%'
-				gap='20px'
-				maxH='100%'
-				overflow='hidden'
-				p='20px'
-			>
-				<Flex
-					as='header'
-					w='100%'
-					justify='space-between'
-					align='center'
-				>
-					<Heading as='h3' color='dkGreen' fontSize='20px'>
-						{patient.fname} {patient.lname}
-					</Heading>
 					<Button
-						as={RRLink}
-						to='update'
-						variant='dkAction'
-						leftIcon={<Icon as={MdModeEdit} />}
+						variant='alertAction'
+						leftIcon={<Icon as={FaTrashCan} />}
+						onClick={() => {
+							onOpen()
+						}}
+						isLoading={pendingDelete}
+						loadingText='Deleting...'
 					>
-						Edit
+						Delete
 					</Button>
-				</Flex>
+				</Tooltip>
+			</Flex>
+			{loadingPatient ?
+				<Center h='100%' w='100%'>
+					<Spinner color='dkGreen' size='xl' />
+				</Center>
+				:
 				<VStack
-					flex={1}
+					as='section'
 					w='100%'
-					overflow='auto'
-					align='right'
-					gap='30px'
-					px='15px'
+					gap='20px'
+					maxH='100%'
+					overflow='hidden'
+					p='20px'
 				>
-					<Flex as='article' p='0 40px' gap='70px'>
+					<Flex
+						as='header'
+						w='100%'
+						justify='space-between'
+						align='center'
+					>
+						<Heading as='h3' color='dkGreen' fontSize='23px'>
+							{patient.fname} {patient.lname}
+						</Heading>
 						<Tooltip
 							hasArrow
-							label={
-								patient.image
-									? "Edit patient image"
-									: "Add patient image"
-							}
+							label='Edit patient details'
 							fontSize='12px'
 							placement='auto'
 							m='5px'
 						>
-							<Box
-								boxSize='200px'
-								cursor='pointer'
-								borderRadius='md'
-								onClick={(e) => {
-									e.stopPropagation()
-									imageRef.current?.click()
-								}}
+							<Button
+								as={RRLink}
+								to='update'
+								variant='dkAction'
+								leftIcon={<Icon as={MdModeEdit} />}
 							>
-								{pendingURL || loadingPatient ?
-									<Center h='100%' w='100%'>
-										<Spinner color='dkGreen' size='xl' />
-									</Center>
-									: <>
-										<Image
-											boxSize='200px'
-											borderRadius='md'
-											border='4px solid #0F737E'
-											objectFit='cover'
-											objectPosition='center top'
-											src={
-												patient.image ??
-												"https://res.cloudinary.com/da2twkx0h/image/upload/v1731970283/patient_default.png"
-											}
-										/>
-										<Center
-											boxSize='200px'
-											borderRadius='md'
-											position='relative'
-											top='-200px'
-											left='0'
-											bg='rgba(0,0,0,0.5)'
-											justify='right'
-											border='4px solid #00FFD9'
-											opacity={0}
-											_hover={{ opacity: 1 }}
-										>
-											<Icon
-												as={MdModeEdit}
-												color='ltGreen'
-												boxSize={9}
-											/>
-										</Center>
-									</>
-								}
-							</Box>
+								Edit
+							</Button>
 						</Tooltip>
-						<Input
-							type='file'
-							display='none'
-							ref={imageRef}
-							accept='image/*'
-							onChange={(e) => {
-								setFile(e.target.files[0])
-								imageUpload()
-							}}
-						/>
-						<VStack align='flex-start' gap='10px'>
-							<HStack w='100%'>
-								<Heading
-									as='h5'
-									fontSize='16px'
-									color='dkGreen'
-									fontWeight='bold'
+					</Flex>
+					<VStack
+						flex={1}
+						w='100%'
+						overflow='auto'
+						align='right'
+						gap='30px'
+						px='15px'
+					>
+						<Flex as='article' p='0 40px' gap='90px'>
+							<Tooltip
+								hasArrow
+								label={
+									patient.image
+										? "Edit patient image"
+										: "Add patient image"
+								}
+								fontSize='12px'
+								placement='auto'
+								m='5px'
+							>
+								<Box
+									boxSize='230px'
+									cursor='pointer'
+									borderRadius='md'
+									onClick={(e) => {
+										e.stopPropagation()
+										imageRef.current?.click()
+									}}
 								>
-									DOB:
-								</Heading>
-								<Text as='p' fontSize='16px'>
-									{new Date(
-										`${patient.dob?.slice(
-											0,
-											4
-										)}, ${patient.dob?.slice(
-											5,
-											7
-										)}, ${patient.dob?.slice(8, 10)}`
-									).toLocaleDateString()}
-								</Text>
-							</HStack>
-							<HStack w='100%'>
-								<Heading
-									as='h5'
-									fontSize='16px'
-									color='dkGreen'
-									fontWeight='bold'
-								>
-									Phone:
-								</Heading>
-								<Text as='p' fontSize='16px'>
-									{patient.telephone}
-								</Text>
-							</HStack>
-							<HStack w='100%'>
-								<Heading
-									as='h5'
-									fontSize='16px'
-									color='dkGreen'
-									fontWeight='bold'
-								>
-									Email:
-								</Heading>
-								<Text as='p' fontSize='16px'>
-									{patient.email}
-								</Text>
-							</HStack>
-							<VStack gap='5px'>
-								<Flex w='100%' justify='left'>
+									{pendingURL ?
+										<Center h='100%' w='100%'>
+											<Spinner color='dkGreen' size='xl' />
+										</Center>
+										: <>
+											<Image
+												boxSize='230px'
+												borderRadius='md'
+												border='4px solid #0F737E'
+												objectFit='cover'
+												objectPosition='center top'
+												src={
+													patient.image ??
+													"https://res.cloudinary.com/da2twkx0h/image/upload/v1731970283/patient_default.png"
+												}
+											/>
+											<Center
+												boxSize='230px'
+												borderRadius='md'
+												position='relative'
+												top='-230px'
+												left='0'
+												bg='rgba(0,0,0,0.5)'
+												justify='right'
+												border='4px solid #00FFD9'
+												opacity={0}
+												_hover={{ opacity: 1 }}
+											>
+												<Icon
+													as={MdModeEdit}
+													color='ltGreen'
+													boxSize={9}
+												/>
+											</Center>
+										</>
+									}
+								</Box>
+							</Tooltip>
+							<Input
+								type='file'
+								display='none'
+								ref={imageRef}
+								accept='image/*'
+								onChange={(e) => {
+									setFile(e.target.files[0])
+									imageUpload()
+								}}
+							/>
+							<VStack align='flex-start' gap='20px'>
+								<HStack w='100%'>
 									<Heading
 										as='h5'
 										fontSize='16px'
 										color='dkGreen'
 										fontWeight='bold'
 									>
-										Address:
+										DOB:
 									</Heading>
-								</Flex>
-								<Text as='p'>{patient.address}</Text>
-								<HStack gap='5px'>
-									<Text>{patient.city},</Text>
-									<Text>{patient.state}</Text>
-									<Text>{patient.zip}</Text>
+									<Text as='p' fontSize='16px'>
+										{new Date(
+											`${patient.dob?.slice(
+												0,
+												4
+											)}, ${patient.dob?.slice(
+												5,
+												7
+											)}, ${patient.dob?.slice(8, 10)}`
+										).toLocaleDateString()}
+									</Text>
 								</HStack>
+								<HStack w='100%'>
+									<Heading
+										as='h5'
+										fontSize='16px'
+										color='dkGreen'
+										fontWeight='bold'
+									>
+										Phone:
+									</Heading>
+									<Text as='p' fontSize='16px'>
+										{patient.telephone}
+									</Text>
+								</HStack>
+								<HStack w='100%'>
+									<Heading
+										as='h5'
+										fontSize='16px'
+										color='dkGreen'
+										fontWeight='bold'
+									>
+										Email:
+									</Heading>
+									<Text as='p' fontSize='16px'>
+										{patient.email}
+									</Text>
+								</HStack>
+								<VStack gap='5px'>
+									<Flex w='100%' justify='left'>
+										<Heading
+											as='h5'
+											fontSize='16px'
+											color='dkGreen'
+											fontWeight='bold'
+										>
+											Address:
+										</Heading>
+									</Flex>
+									<Text as='p'>{patient.address}</Text>
+									<HStack gap='5px'>
+										<Text>{patient.city},</Text>
+										<Text>{patient.state}</Text>
+										<Text>{patient.zip}</Text>
+									</HStack>
+								</VStack>
 							</VStack>
-						</VStack>
-					</Flex>
-					<VStack
-						as='article'
-						w='100%'
-						gap='15px'
-						maxH='100%'
-						align='flex-start'
-					>
-						<Flex
-							as='header'
-							w='100%'
-							justify='space-between'
-							gap='20px'
-							p='10px'
-						>
-							<VStack gap='3px' align='flex-start'>
-								<Heading
-									as='h4'
-									fontSize='18px'
-									color='dkGreen'
-								>
-									Patient History:
-								</Heading>
-								<Text as='p' fontSize='16px' px='10px'>
-									Record editing can be done from the records
-									page. Follow appointment links or view all.
-								</Text>
-							</VStack>
-							<Tooltip
-								hasArrow
-								label='Navigate to all records'
-								fontSize='12px'
-								placement='auto'
-								mx='10px'
-							>
-								<Button
-									as={RRLink}
-									to='record'
-									variant='dkAction'
-									leftIcon={<Icon as={IoEye} />}
-								>
-									View All
-								</Button>
-							</Tooltip>
 						</Flex>
-						{loadingPatients ? (
-							<Center h='100%' w='100%'>
-								<Spinner color='dkGreen' size='xl' />
-							</Center>
-						) : (
-							<List spacing='15px' px='50px'>
-								{records.length > 0 ? (
-									records.map((record) => {
-										const date = new Date(record.apptDate)
+						<VStack
+							as='article'
+							w='100%'
+							gap='15px'
+							maxH='100%'
+							align='flex-start'
+						>
+							<Flex
+								as='header'
+								w='100%'
+								justify='space-between'
+								gap='20px'
+								p='10px'
+							>
+								<VStack gap='3px' align='flex-start'>
+									<Heading
+										as='h4'
+										fontSize='18px'
+										color='dkGreen'
+									>
+										Patient History:
+									</Heading>
+									<Text as='p' fontSize='16px' px='10px'>
+										Record editing can be done from the records
+										page. Follow appointment links or view all.
+									</Text>
+								</VStack>
+								<Tooltip
+									hasArrow
+									label='Navigate to all records'
+									fontSize='12px'
+									placement='auto'
+									mx='10px'
+								>
+									<Button
+										as={RRLink}
+										to='record'
+										variant='dkAction'
+										leftIcon={<Icon as={IoEye} />}
+									>
+										View All
+									</Button>
+								</Tooltip>
+							</Flex>
+							{loadingRecords ? (
+								<Center h='100%' w='100%'>
+									<Spinner color='dkGreen' size='xl' />
+								</Center>
+							) : (
+								<List spacing='15px' px='50px'>
+									{records.length > 0 ? (
+										records.map((record) => {
+											const date = new Date(record.apptDate)
 
-										return (
-											<ListItem
-												key={record._id}
-												fontWeight='bold'
-											>
-												<Tooltip
-													hasArrow
-													label='Navigate to this record'
-													fontSize='12px'
-													placement='auto'
-													mx='10px'
+											return (
+												<ListItem
+													key={record._id}
+													fontWeight='bold'
 												>
-													<Link
-														as={RRLink}
-														to={`record#${record._id}`}
-														state={{
-															transRecord: record,
-														}}
-														variant='patient'
+													<Tooltip
+														hasArrow
+														label='Navigate to this record'
+														fontSize='12px'
+														placement='auto'
+														mx='10px'
 													>
-														{date.toDateString()}
-													</Link>
-												</Tooltip>
-											</ListItem>
-										)
-									})
-								) : (
-									<ListItem>No patient records</ListItem>
-								)}
-							</List>
-						)}
+														<Link
+															as={RRLink}
+															to={`record#${record._id}`}
+															state={{
+																transRecord: record,
+															}}
+															variant='patient'
+														>
+															{date.toDateString()}
+														</Link>
+													</Tooltip>
+												</ListItem>
+											)
+										})
+									) : (
+										<ListItem>No patient records</ListItem>
+									)}
+								</List>
+							)}
+						</VStack>
 					</VStack>
 				</VStack>
-			</VStack>
+			}
 		</VStack>
 	)
 }

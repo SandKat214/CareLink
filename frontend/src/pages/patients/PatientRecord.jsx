@@ -109,6 +109,7 @@ const PatientRecord = () => {
 		throwOnError: true,
 	})
 
+	// add and edit records in db
 	const { isPending, mutateAsync } = useMutation({
 		mutationFn: async (values) => {
 			try {

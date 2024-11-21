@@ -301,7 +301,7 @@ const PatientDetails = () => {
 												<Icon
 													as={MdModeEdit}
 													color='ltGreen'
-													boxSize={9}
+													boxSize={12}
 												/>
 											</Center>
 										</>

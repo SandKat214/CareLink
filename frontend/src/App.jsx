@@ -20,6 +20,8 @@ import AddPatient from "./pages/patients/AddPatient"
 import EditPatient from "./pages/patients/EditPatient"
 import DailyAppts from "./pages/appts/DailyAppts"
 import AddAppt from "./pages/appts/AddAppt"
+import Login from "./pages/authorization/Login"
+import Signup from "./pages/authorization/Signup"
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -45,6 +47,8 @@ const router = createBrowserRouter(
 					<Route index element={<DailyAppts />} />
 					<Route path='new' element={<AddAppt />} />
 				</Route>
+				<Route path='login' element={<Login />} />
+				<Route path='signup' element={<Signup />} />
 			</Route>
 		</Route>
 	)

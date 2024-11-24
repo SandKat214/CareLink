@@ -1,6 +1,7 @@
 import { Flex, Heading, HStack, Icon, Link, Text } from "@chakra-ui/react"
 import { NavLink } from "react-router-dom"
 import "@fontsource/lalezar"
+import { useAuthContext } from "../hooks/useAuthContext"
 
 // icons
 import { MdGroups } from "react-icons/md"
@@ -33,11 +34,13 @@ const NavLinks = () => {
 }
 
 const NavBar = () => {
+	const { user } = useAuthContext()
+
 	return (
 		<Flex
 			as='header'
 			w='100%'
-			justify='space-between'
+			justify={user ? "space-between" : "left"}
 			align='end'
 			gap='40px'
 			p='40px 60px'
@@ -57,7 +60,7 @@ const NavBar = () => {
 				</Text>
 				nk
 			</Heading>
-			<NavLinks />
+			{user && <NavLinks />}
 		</Flex>
 	)
 }

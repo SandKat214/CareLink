@@ -91,10 +91,7 @@ const PatientsLayout = () => {
 											>
 												<Link
 													as={NavLink}
-													to={
-														"/patients/" +
-														patient._id
-													}
+													to={patient._id}
 													variant='patient'
 												>
 													{patient.lname},{" "}

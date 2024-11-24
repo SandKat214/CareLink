@@ -28,6 +28,7 @@ import axios from "axios"
 import { useRef, useState } from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useAuthContext } from "../../hooks/useAuthContext"
+import { useLogout } from "../../hooks/useLogout"
 
 // components
 import AlertModal from "../../components/AlertModal"
@@ -40,9 +41,10 @@ import { ArrowBackIcon } from "@chakra-ui/icons"
 
 const PatientDetails = () => {
 	const { patientId } = useParams()
-	const { fetchPatients } = useOutletContext()
+	const { fetchPatients, setPatients } = useOutletContext()
 	const { user } = useAuthContext()
 	const navigate = useNavigate()
+	const { logout } = useLogout()
 	const { isOpen, onClose, onOpen } = useDisclosure()
 	const toast = useToast()
 	const [records, setRecords] = useState([])
@@ -61,16 +63,30 @@ const PatientDetails = () => {
 
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "patients/" + patientId, {
+					import.meta.env.VITE_PATIENT_API + "patients/" + patientId,
+					{
 						headers: {
-							Authorization: `Bearer ${user.token}`
-						}
+							Authorization: `Bearer ${user.token}`,
+						},
 					}
 				)
 				setPatient(res.data)
 				return res.data
 			} catch (error) {
-				console.log(error.message)
+				console.log(error)
+
+				// User session timout
+				if (error.status === 401) {
+					toast({
+						description: "Session timeout. Please log back in.",
+						status: "error",
+					})
+					setPatients([])
+					logout()
+					return error
+				}
+
+				// other error
 				throw new Error("Could not find patient with that id.")
 			}
 		},
@@ -88,16 +104,27 @@ const PatientDetails = () => {
 
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "records/" + patientId, {
+					import.meta.env.VITE_PATIENT_API + "records/" + patientId,
+					{
 						headers: {
-							Authorization: `Bearer ${user.token}`
-						}
+							Authorization: `Bearer ${user.token}`,
+						},
 					}
 				)
 				setRecords(res.data)
 				return res.data
 			} catch (error) {
 				console.log(error)
+
+				// User session timout
+				if (error.status === 401) {
+					console.log("timeout")
+					setPatients([])
+					logout()
+					return error
+				}
+
+				// other error
 				toast({
 					description:
 						error.response.data.error ||
@@ -122,19 +149,21 @@ const PatientDetails = () => {
 					await axios.delete(
 						`${
 							import.meta.env.VITE_PATIENT_API
-						}patients/${patientId}`, {
+						}patients/${patientId}`,
+						{
 							headers: {
-								Authorization: `Bearer ${user.token}`
-							}
+								Authorization: `Bearer ${user.token}`,
+							},
 						}
 					)
 					await axios.delete(
 						`${
 							import.meta.env.VITE_PATIENT_API
-						}records/${patientId}`, {
+						}records/${patientId}`,
+						{
 							headers: {
-								Authorization: `Bearer ${user.token}`
-							}
+								Authorization: `Bearer ${user.token}`,
+							},
 						}
 					)
 					toast({
@@ -145,6 +174,19 @@ const PatientDetails = () => {
 					fetchPatients()
 				} catch (error) {
 					console.log(error)
+
+					// User session timout
+					if (error.status === 401) {
+						toast({
+							description: "Session timeout. Please log back in.",
+							status: "error",
+						})
+						setPatients([])
+						logout()
+						return error
+					}
+
+					// other error
 					toast({
 						description:
 							error.response.data.error ||
@@ -162,7 +204,7 @@ const PatientDetails = () => {
 			if (!user) {
 				throw Error("You must be logged in.")
 			}
-			
+
 			try {
 				const data = new FormData()
 				data.append("file", file)
@@ -173,14 +215,15 @@ const PatientDetails = () => {
 					`${import.meta.env.VITE_IMAGES_API}`,
 					data
 				)
-				
+
 				// add url to patient information in database
 				await axios.patch(
 					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`,
-					{ image: imageRes.data }, {
+					{ image: imageRes.data },
+					{
 						headers: {
-							Authorization: `Bearer ${user.token}`
-						}
+							Authorization: `Bearer ${user.token}`,
+						},
 					}
 				)
 				fetchPatient()
@@ -190,6 +233,19 @@ const PatientDetails = () => {
 				})
 			} catch (error) {
 				console.log(error)
+
+				// User session timout
+				if (error.status === 401) {
+					console.log("timeout")
+					toast({
+						description: "Session timeout. Please log back in.",
+						status: "error",
+					})
+					setPatients([])
+					logout()
+					return error
+				}
+
 				toast({
 					description:
 						error.response.data.message || "Error uploading image.",
@@ -240,11 +296,11 @@ const PatientDetails = () => {
 					</Button>
 				</Tooltip>
 			</Flex>
-			{loadingPatient ?
+			{loadingPatient ? (
 				<Center h='100%' w='100%'>
 					<Spinner color='dkGreen' size='xl' />
 				</Center>
-				:
+			) : (
 				<VStack
 					as='section'
 					w='100%'
@@ -308,11 +364,15 @@ const PatientDetails = () => {
 										imageRef.current?.click()
 									}}
 								>
-									{pendingURL ?
+									{pendingURL ? (
 										<Center h='100%' w='100%'>
-											<Spinner color='dkGreen' size='xl' />
+											<Spinner
+												color='dkGreen'
+												size='xl'
+											/>
 										</Center>
-										: <>
+									) : (
+										<>
 											<Image
 												boxSize='230px'
 												borderRadius='md'
@@ -343,7 +403,7 @@ const PatientDetails = () => {
 												/>
 											</Center>
 										</>
-									}
+									)}
 								</Box>
 							</Tooltip>
 							<Input
@@ -447,8 +507,9 @@ const PatientDetails = () => {
 										Patient History:
 									</Heading>
 									<Text as='p' fontSize='16px' px='10px'>
-										Record editing can be done from the records
-										page. Follow appointment links or view all.
+										Record editing can be done from the
+										records page. Follow appointment links
+										or view all.
 									</Text>
 								</VStack>
 								<Tooltip
@@ -476,7 +537,9 @@ const PatientDetails = () => {
 								<List spacing='15px' px='50px'>
 									{records.length > 0 ? (
 										records.map((record) => {
-											const date = new Date(record.apptDate)
+											const date = new Date(
+												record.apptDate
+											)
 
 											return (
 												<ListItem
@@ -494,7 +557,8 @@ const PatientDetails = () => {
 															as={RRLink}
 															to={`record#${record._id}`}
 															state={{
-																transRecord: record,
+																transRecord:
+																	record,
 															}}
 															variant='patient'
 														>
@@ -512,7 +576,7 @@ const PatientDetails = () => {
 						</VStack>
 					</VStack>
 				</VStack>
-			}
+			)}
 		</VStack>
 	)
 }

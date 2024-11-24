@@ -25,11 +25,18 @@ import {
 	VStack,
 } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import {
+	useLocation,
+	useNavigate,
+	useOutletContext,
+	useParams,
+} from "react-router-dom"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { useFormik } from "formik"
 import * as Yup from "yup"
+import { useAuthContext } from "../../hooks/useAuthContext"
+import { useLogout } from "../../hooks/useLogout"
 
 // icons
 import { MdAdd } from "react-icons/md"
@@ -40,13 +47,14 @@ import {
 	CloseIcon,
 } from "@chakra-ui/icons"
 import { MdModeEdit } from "react-icons/md"
-import { useAuthContext } from "../../hooks/useAuthContext"
 
 const PatientRecord = () => {
 	const navigate = useNavigate()
 	const { patientId } = useParams()
 	const { state } = useLocation()
 	const { user } = useAuthContext()
+	const { logout } = useLogout()
+	const { setPatients } = useOutletContext()
 	const toast = useToast()
 
 	const [expanded, setExpanded] = useState([])
@@ -81,16 +89,30 @@ const PatientRecord = () => {
 
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "patients/" + patientId, {
+					import.meta.env.VITE_PATIENT_API + "patients/" + patientId,
+					{
 						headers: {
-							Authorization: `Bearer ${user.token}`
-						}
+							Authorization: `Bearer ${user.token}`,
+						},
 					}
 				)
 				setPatient(res.data)
 				return res.data
 			} catch (error) {
-				console.log(error.message)
+				console.log(error)
+
+				// User session timout
+				if (error.status === 401) {
+					toast({
+						description: "Session timeout. Please log back in.",
+						status: "error",
+					})
+					setPatients([])
+					logout()
+					return error
+				}
+
+				// other error
 				throw new Error("Could not find patient with that id.")
 			}
 		},
@@ -108,16 +130,26 @@ const PatientRecord = () => {
 
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "records/" + patientId, {
+					import.meta.env.VITE_PATIENT_API + "records/" + patientId,
+					{
 						headers: {
-							Authorization: `Bearer ${user.token}`
-						}
+							Authorization: `Bearer ${user.token}`,
+						},
 					}
 				)
 				setRecords(res.data)
 				return res.data
 			} catch (error) {
-				console.log(error.message)
+				console.log(error)
+
+				// User session timout
+				if (error.status === 401) {
+					setPatients([])
+					logout()
+					return error
+				}
+
+				// other error
 				throw new Error(
 					"Could not retrieve the records for that patient."
 				)
@@ -144,10 +176,11 @@ const PatientRecord = () => {
 						`${import.meta.env.VITE_PATIENT_API}records/${
 							values.id
 						}`,
-						data, {
+						data,
+						{
 							headers: {
-								Authorization: `Bearer ${user.token}`
-							}
+								Authorization: `Bearer ${user.token}`,
+							},
 						}
 					)
 				} else {
@@ -159,10 +192,11 @@ const PatientRecord = () => {
 					}
 					await axios.post(
 						`${import.meta.env.VITE_PATIENT_API}records/`,
-						data, {
+						data,
+						{
 							headers: {
-								Authorization: `Bearer ${user.token}`
-							}
+								Authorization: `Bearer ${user.token}`,
+							},
 						}
 					)
 				}
@@ -172,6 +206,19 @@ const PatientRecord = () => {
 				fetchRecords()
 			} catch (error) {
 				console.log(error)
+
+				// User session timout
+				if (error.status === 401) {
+					toast({
+						description: "Session timeout. Please log back in.",
+						status: "error",
+					})
+					setPatients([])
+					logout()
+					return error
+				}
+
+				// other error
 				toast({
 					description:
 						error.response.data.error || "Error saving submission.",

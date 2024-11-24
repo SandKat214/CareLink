@@ -11,24 +11,20 @@ import {
 import { IoMdLogOut } from "react-icons/io"
 import { useAuthContext } from "../hooks/useAuthContext"
 import { useState } from "react"
+import { useLogout } from "../hooks/useLogout"
 
 const Footer = ({ setPatients }) => {
 	const toast = useToast()
-	const { user, dispatch } = useAuthContext()
+	const { user } = useAuthContext()
+	const { logout } = useLogout()
 	const [isPending, setIsPending] = useState(false)
 
 	const handleLogout = () => {
 		setIsPending(true)
 
-		// remove user from local storage
-		localStorage.removeItem("user")
-
-		// update auth context
-		dispatch({ type: "LOGOUT" })
-
-		// clear patients
+		// logout and clear patients
+		logout()
 		setPatients([])
-
 		toast({ description: "Logout successful.", status: "success" })
 
 		setIsPending(false)

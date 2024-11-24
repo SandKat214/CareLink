@@ -17,6 +17,7 @@ import * as Yup from "yup"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { useAuthContext } from "../../hooks/useAuthContext"
+import { useLogout } from "../../hooks/useLogout"
 
 // utils
 import { states } from "../../utils/states"
@@ -29,9 +30,11 @@ const AddPatient = () => {
 
 	const navigate = useNavigate()
 	const toast = useToast()
-	const { fetchPatients } = useOutletContext()
+	const { fetchPatients, setPatients } = useOutletContext()
 	const { user } = useAuthContext()
+	const { logout } = useLogout()
 
+	// form validation
 	const formik = useFormik({
 		initialValues: {
 			fname: "",
@@ -101,10 +104,11 @@ const AddPatient = () => {
 
 				const res = await axios.post(
 					`${import.meta.env.VITE_PATIENT_API}patients/`,
-					data, {
+					data,
+					{
 						headers: {
-							Authorization: `Bearer ${user.token}`
-						}
+							Authorization: `Bearer ${user.token}`,
+						},
 					}
 				)
 				const newPatient = res.data
@@ -116,6 +120,19 @@ const AddPatient = () => {
 				navigate(`../${newPatient._id}`, { relative: "path" })
 			} catch (error) {
 				console.log(error)
+
+				// User session timout
+				if (error.status === 401) {
+					toast({
+						description: "Session timeout. Please log back in.",
+						status: "error",
+					})
+					setPatients([])
+					logout()
+					return error
+				}
+
+				// other error
 				toast({
 					description:
 						error.response.data.error || "Error saving submission.",

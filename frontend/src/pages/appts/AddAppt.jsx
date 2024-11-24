@@ -17,16 +17,20 @@ import * as Yup from "yup"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { useAuthContext } from "../../hooks/useAuthContext"
+import { useLogout } from "../../hooks/useLogout"
 
 // icons
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons"
 
 const AddAppt = () => {
-	const { fetchAppts, fetchPatients, patients, setPatients, focusDate, year, month } = useOutletContext()
+	const { fetchAppts, patients, setPatients, focusDate, year, month } =
+		useOutletContext()
 	const { user } = useAuthContext()
+	const { logout } = useLogout()
 	const navigate = useNavigate()
 	const toast = useToast()
 
+	// form validation
 	const formik = useFormik({
 		initialValues: {
 			patient: "",
@@ -49,17 +53,18 @@ const AddAppt = () => {
 			if (!user) {
 				throw Error("You must be logged in.")
 			}
-			
+
 			try {
 				// get patient info
 				const patient = await axios.get(
 					import.meta.env.VITE_PATIENT_API +
 						"patients/" +
-						values.patient, {
-							headers: {
-								Authorization: `Bearer ${user.token}`
-							}
-						}
+						values.patient,
+					{
+						headers: {
+							Authorization: `Bearer ${user.token}`,
+						},
+					}
 				)
 
 				// create event
@@ -95,6 +100,15 @@ const AddAppt = () => {
 				navigate("..", { relative: "path" })
 			} catch (error) {
 				console.log(error)
+
+				// User session timout
+				if (error.status === 401) {
+					setPatients([])
+					logout()
+					return error
+				}
+
+				// other error
 				toast({
 					description:
 						error.response.data.error ||

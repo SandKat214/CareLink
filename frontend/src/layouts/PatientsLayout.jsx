@@ -23,9 +23,16 @@ import { MdAdd } from "react-icons/md"
 import { useEffect } from "react"
 
 const PatientsLayout = () => {
-	const { fetchPatients, isLoading, patients, searchValue, setSearchValue } =
-		useOutletContext()
-	
+	const {
+		fetchPatients,
+		isLoading,
+		patients,
+		setPatients,
+		searchValue,
+		setSearchValue,
+	} = useOutletContext()
+
+	// fresh fetch after login
 	useEffect(() => {
 		fetchPatients()
 	}, [])
@@ -151,7 +158,7 @@ const PatientsLayout = () => {
 				</Flex>
 			</VStack>
 			<VStack as='section' flex={1} height='100%' maxH='100%'>
-				<Outlet context={{fetchPatients}} />
+				<Outlet context={{ fetchPatients, setPatients }} />
 			</VStack>
 		</Flex>
 	)

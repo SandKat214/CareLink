@@ -19,14 +19,16 @@ import { NavLink, Outlet, useOutletContext } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { useAuthContext } from "../hooks/useAuthContext"
+import { useLogout } from "../hooks/useLogout"
 
 // icons
 import { MdAdd } from "react-icons/md"
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 
 const ApptLayout = () => {
-	const { patients } = useOutletContext()
+	const { patients, setPatients } = useOutletContext()
 	const { user } = useAuthContext()
+	const { logout } = useLogout()
 	const toast = useToast()
 
 	const curDate = new Date()
@@ -69,15 +71,27 @@ const ApptLayout = () => {
 		}
 		try {
 			const res = await axios.get(
-				import.meta.env.VITE_PATIENT_API + "patients/" + patientId, {
+				import.meta.env.VITE_PATIENT_API + "patients/" + patientId,
+				{
 					headers: {
-						Authorization: `Bearer ${user.token}`
-					}
+						Authorization: `Bearer ${user.token}`,
+					},
 				}
-				
 			)
 			return res.data
 		} catch (error) {
+			// User session timout
+			if (error.status === 401) {
+				toast({
+					description: "Session timeout. Please log back in.",
+					status: "error",
+				})
+				setPatients([])
+				logout()
+				return error.status
+			}
+
+			// other error
 			return null
 		}
 	}
@@ -113,7 +127,7 @@ const ApptLayout = () => {
 
 	// build appointment arrays that key to calendar date
 	const buildAppts = async (apptList) => {
-		setLoading(true)			// start loading spinners
+		setLoading(true) // start loading spinners
 		const apptsLen = apptList.length
 		const apptObj = {}
 		for (let i = 0, j = i; i < apptsLen; i = j) {
@@ -134,9 +148,13 @@ const ApptLayout = () => {
 				let patient = await fetchPatient(apptList[j].attendees[0])
 				if (!patient) {
 					// mark inactive
-					apptList[j].title = apptList[j].title + " - inactive patient"
+					apptList[j].title =
+						apptList[j].title + " - inactive patient"
 					apptList[j].attendees = null
 					apptList[j].email = null
+				} else if (patient === 401) {
+					// authorization error
+					return
 				} else {
 					// otherwise save email for notifications
 					apptList[j].email = patient.email
@@ -147,13 +165,13 @@ const ApptLayout = () => {
 			apptObj[dateIndex] = tempArr
 		}
 		setAppts(apptObj)
-		setLoading(false)			// cancel spinners
+		setLoading(false) // cancel spinners
 	}
 
 	// handle month change
 	const handleNewMonth = (newMonth) => {
-		setAppts({})				// reset appointments object
-		
+		setAppts({}) // reset appointments object
+
 		// handle year change
 		if (newMonth < 0 || newMonth > 11) {
 			const newDate = new Date(year, newMonth, 1)
@@ -193,7 +211,8 @@ const ApptLayout = () => {
 				console.log(error)
 				toast({
 					description:
-						error.response.data.error || error.message ||
+						error.response.data.error ||
+						error.message ||
 						"Could not retrieve appointments from event service.",
 					status: "error",
 				})
@@ -408,29 +427,38 @@ const ApptLayout = () => {
 										)}
 									</Flex>
 									<Flex flexGrow={1}>
-										{loading ?
+										{loading ? (
 											<Center h='100%' w='100%'>
-												<Spinner color='dkGreen' size='xl' />
+												<Spinner
+													color='dkGreen'
+													size='xl'
+												/>
 											</Center>
-											:
+										) : (
 											<List spacing='2px' variant='event'>
-												{appts[date]?.map((appt, index) => {
-													return (
-														<ListItem key={index}>
-															{`${new Date(
-																appt.startEvent
-															).toLocaleTimeString(
-																"en-US",
-																{
-																	hour: "2-digit",
-																	minute: "2-digit",
-																}
-															)} - ${appt.title}`}
-														</ListItem>
-													)
-												})}
+												{appts[date]?.map(
+													(appt, index) => {
+														return (
+															<ListItem
+																key={index}
+															>
+																{`${new Date(
+																	appt.startEvent
+																).toLocaleTimeString(
+																	"en-US",
+																	{
+																		hour: "2-digit",
+																		minute: "2-digit",
+																	}
+																)} - ${
+																	appt.title
+																}`}
+															</ListItem>
+														)
+													}
+												)}
 											</List>
-										}
+										)}
 									</Flex>
 								</Box>
 							)

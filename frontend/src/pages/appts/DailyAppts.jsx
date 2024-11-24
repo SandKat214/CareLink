@@ -17,6 +17,7 @@ import { Link as RRLink, useOutletContext } from "react-router-dom"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import axios from "axios"
+import { useAuthContext } from "../../hooks/useAuthContext"
 
 // components
 import AlertModal from "../../components/AlertModal"
@@ -28,6 +29,7 @@ import { ArrowForwardIcon } from "@chakra-ui/icons"
 
 const DailyAppts = () => {
 	const { fetchAppts, isLoading, dailies } = useOutletContext()
+	const { user } = useAuthContext()
 	const toast = useToast()
 	const {
 		isOpen: isDel,
@@ -87,7 +89,7 @@ const DailyAppts = () => {
 					{ hour: "2-digit", minute: "2-digit" }
 				)
 				const data = {
-					fromName: "CareLink",
+					fromName: user.name,
 					toName: apptToRem.title,
 					replyEmail: "user@carelink.site",
 					toEmail: apptToRem.email,

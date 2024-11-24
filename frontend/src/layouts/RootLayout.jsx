@@ -4,6 +4,7 @@ import axios from "axios"
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useAuthContext } from "../hooks/useAuthContext"
+import { useLogout } from "../hooks/useLogout"
 
 // components
 import NavBar from "../components/NavBar"
@@ -12,6 +13,7 @@ import Footer from "../components/Footer"
 const RootLayout = () => {
 	const { user } = useAuthContext()
 	const toast = useToast()
+	const { logout } = useLogout()
 	const [searchValue, setSearchValue] = useState("")
 	const [patients, setPatients] = useState([])
 
@@ -22,18 +24,19 @@ const RootLayout = () => {
 			if (!user) {
 				throw Error("You must be logged in.")
 			}
-			
+
 			// if value typed in search bar, fetch matching
 			try {
 				if (searchValue) {
 					const res = await axios.get(
 						import.meta.env.VITE_PATIENT_API +
 							"patients/search/query?q=" +
-							searchValue, {
-								headers: {
-									Authorization: `Bearer ${user.token}`
-								}
-							}
+							searchValue,
+						{
+							headers: {
+								Authorization: `Bearer ${user.token}`,
+							},
+						}
 					)
 					setPatients(res.data)
 					return res.data
@@ -41,16 +44,30 @@ const RootLayout = () => {
 
 				// otherwise fetch all patients
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "patients", {
+					import.meta.env.VITE_PATIENT_API + "patients",
+					{
 						headers: {
-							Authorization: `Bearer ${user.token}`
-						}
+							Authorization: `Bearer ${user.token}`,
+						},
 					}
 				)
 				setPatients(res.data)
 				return res.data
 			} catch (error) {
 				console.log(error)
+
+				// User session timout
+				if (error.status === 401) {
+					toast({
+						description: "Session timeout. Please log back in.",
+						status: "error",
+					})
+					setPatients([])
+					logout()
+					return error
+				}
+
+				// other error
 				toast({
 					description:
 						error.response.data.error ||

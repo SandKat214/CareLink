@@ -17,6 +17,7 @@ import * as Yup from "yup"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { useAuthContext } from "../../hooks/useAuthContext"
+import { useLogout } from "../../hooks/useLogout"
 
 // utils
 import { states } from "../../utils/states"
@@ -31,11 +32,13 @@ const EditPatient = () => {
 	const { patientId } = useParams()
 	const navigate = useNavigate()
 	const toast = useToast()
-	const { fetchPatients } = useOutletContext()
+	const { fetchPatients, setPatients } = useOutletContext()
 	const { user } = useAuthContext()
+	const { logout } = useLogout()
 
 	const [patient, setPatient] = useState()
 
+	// form validation
 	const formik = useFormik({
 		initialValues: {
 			fname: patient?.fname || "",
@@ -83,13 +86,14 @@ const EditPatient = () => {
 			if (!user) {
 				throw Error("You must be logged in.")
 			}
-			
+
 			try {
 				const res = await axios.get(
-					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`, {
+					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`,
+					{
 						headers: {
-							Authorization: `Bearer ${user.token}`
-						}
+							Authorization: `Bearer ${user.token}`,
+						},
 					}
 				)
 				const patient = res.data
@@ -108,6 +112,19 @@ const EditPatient = () => {
 				return patient
 			} catch (error) {
 				console.log(error)
+
+				// User session timout
+				if (error.status === 401) {
+					toast({
+						description: "Session timeout. Please log back in.",
+						status: "error",
+					})
+					setPatients([])
+					logout()
+					return error
+				}
+
+				// other error
 				throw new Error("Could not find patient with that id.")
 			}
 		},
@@ -143,10 +160,11 @@ const EditPatient = () => {
 
 				const res = await axios.patch(
 					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`,
-					data, {
+					data,
+					{
 						headers: {
-							Authorization: `Bearer ${user.token}`
-						}
+							Authorization: `Bearer ${user.token}`,
+						},
 					}
 				)
 				const newPatient = res.data
@@ -158,6 +176,20 @@ const EditPatient = () => {
 				navigate("..", { relative: "path" })
 			} catch (error) {
 				console.log(error)
+
+				// User session timout
+				if (error.status === 401) {
+					console.log("timeout")
+					toast({
+						description: "Session timeout. Please log back in.",
+						status: "error",
+					})
+					setPatients([])
+					logout()
+					return error
+				}
+
+				// other error
 				toast({
 					description:
 						error.response.data.error || "Error saving submission.",

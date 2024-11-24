@@ -12,7 +12,7 @@ import {
 	useToast,
 	VStack,
 } from "@chakra-ui/react"
-import { Link as RRLink, useOutletContext } from "react-router-dom"
+import { Link as RRLink } from "react-router-dom"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import YupPassword from "yup-password"
@@ -20,7 +20,6 @@ YupPassword(Yup)
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { useAuthContext } from "../../hooks/useAuthContext"
-import { useEffect } from "react"
 
 // icons
 import { CheckIcon } from "@chakra-ui/icons"
@@ -28,7 +27,6 @@ import { CheckIcon } from "@chakra-ui/icons"
 const Signup = () => {
 	const toast = useToast()
 	const { dispatch } = useAuthContext()
-	const { setPatients } = useOutletContext()
 
 	// form validation
 	const formik = useFormik({
@@ -84,11 +82,6 @@ const Signup = () => {
 			}
 		},
 	})
-
-	// clear patients logout from expired token
-	useEffect(() => {
-		setPatients([])
-	}, [])
 
 	return (
 		<Center as='main' w='100%' h='100%' flexDirection='column'>

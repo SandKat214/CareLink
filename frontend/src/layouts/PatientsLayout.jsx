@@ -20,10 +20,15 @@ import "@fontsource/lalezar"
 // icons
 import { IoIosSearch } from "react-icons/io"
 import { MdAdd } from "react-icons/md"
+import { useEffect } from "react"
 
 const PatientsLayout = () => {
 	const { fetchPatients, isLoading, patients, searchValue, setSearchValue } =
 		useOutletContext()
+	
+	useEffect(() => {
+		fetchPatients()
+	}, [])
 
 	return (
 		<Flex as='main' w='100%' h='100%' maxH='100%' overflow='hidden' gap={0}>

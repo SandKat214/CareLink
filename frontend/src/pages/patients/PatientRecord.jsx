@@ -40,11 +40,13 @@ import {
 	CloseIcon,
 } from "@chakra-ui/icons"
 import { MdModeEdit } from "react-icons/md"
+import { useAuthContext } from "../../hooks/useAuthContext"
 
 const PatientRecord = () => {
 	const navigate = useNavigate()
 	const { patientId } = useParams()
 	const { state } = useLocation()
+	const { user } = useAuthContext()
 	const toast = useToast()
 
 	const [expanded, setExpanded] = useState([])
@@ -73,9 +75,17 @@ const PatientRecord = () => {
 	const {} = useQuery({
 		queryKey: ["patient", patientId],
 		queryFn: async () => {
+			if (!user) {
+				throw Error("You must be logged in.")
+			}
+
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "patients/" + patientId
+					import.meta.env.VITE_PATIENT_API + "patients/" + patientId, {
+						headers: {
+							Authorization: `Bearer ${user.token}`
+						}
+					}
 				)
 				setPatient(res.data)
 				return res.data
@@ -84,7 +94,7 @@ const PatientRecord = () => {
 				throw new Error("Could not find patient with that id.")
 			}
 		},
-		retry: 0,
+		retry: 1,
 		throwOnError: true,
 	})
 
@@ -92,9 +102,17 @@ const PatientRecord = () => {
 	const { isLoading, refetch: fetchRecords } = useQuery({
 		queryKey: ["records", patientId],
 		queryFn: async () => {
+			if (!user) {
+				throw Error("You must be logged in.")
+			}
+
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "records/" + patientId
+					import.meta.env.VITE_PATIENT_API + "records/" + patientId, {
+						headers: {
+							Authorization: `Bearer ${user.token}`
+						}
+					}
 				)
 				setRecords(res.data)
 				return res.data
@@ -105,13 +123,17 @@ const PatientRecord = () => {
 				)
 			}
 		},
-		retry: 0,
+		retry: 1,
 		throwOnError: true,
 	})
 
 	// add and edit records in db
 	const { isPending, mutateAsync } = useMutation({
 		mutationFn: async (values) => {
+			if (!user) {
+				throw Error("You must be logged in.")
+			}
+
 			try {
 				// if this is an edit
 				if (values.id) {
@@ -122,7 +144,11 @@ const PatientRecord = () => {
 						`${import.meta.env.VITE_PATIENT_API}records/${
 							values.id
 						}`,
-						data
+						data, {
+							headers: {
+								Authorization: `Bearer ${user.token}`
+							}
+						}
 					)
 				} else {
 					// else it's a create
@@ -133,7 +159,11 @@ const PatientRecord = () => {
 					}
 					await axios.post(
 						`${import.meta.env.VITE_PATIENT_API}records/`,
-						data
+						data, {
+							headers: {
+								Authorization: `Bearer ${user.token}`
+							}
+						}
 					)
 				}
 				toast({ description: "Submission saved.", status: "success" })

@@ -18,6 +18,7 @@ import { useState } from "react"
 import { NavLink, Outlet, useOutletContext } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
+import { useAuthContext } from "../hooks/useAuthContext"
 
 // icons
 import { MdAdd } from "react-icons/md"
@@ -25,9 +26,9 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 
 const ApptLayout = () => {
 	const { patients } = useOutletContext()
+	const { user } = useAuthContext()
 	const toast = useToast()
 
-	const userID = 1
 	const curDate = new Date()
 	const today = {
 		year: curDate.getFullYear(),
@@ -63,9 +64,17 @@ const ApptLayout = () => {
 
 	// fetch patient from db
 	const fetchPatient = async (patientId) => {
+		if (!user) {
+			throw Error("You must be logged in.")
+		}
 		try {
 			const res = await axios.get(
-				import.meta.env.VITE_PATIENT_API + "patients/" + patientId
+				import.meta.env.VITE_PATIENT_API + "patients/" + patientId, {
+					headers: {
+						Authorization: `Bearer ${user.token}`
+					}
+				}
+				
 			)
 			return res.data
 		} catch (error) {
@@ -175,7 +184,7 @@ const ApptLayout = () => {
 			try {
 				const res = await axios.get(
 					import.meta.env.VITE_EVENTS_API +
-						userID +
+						user.id +
 						`/dates?start=${fromYear}-${fromMonth}-01&end=${toYear}-${toMonth}-02`
 				)
 				buildAppts(res.data)
@@ -184,7 +193,7 @@ const ApptLayout = () => {
 				console.log(error)
 				toast({
 					description:
-						error.response.data.error ||
+						error.response.data.error || error.message ||
 						"Could not retrieve appointments from event service.",
 					status: "error",
 				})

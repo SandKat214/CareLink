@@ -16,6 +16,7 @@ import { useFormik } from "formik"
 import * as Yup from "yup"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import axios from "axios"
+import { useAuthContext } from "../../hooks/useAuthContext"
 
 // utils
 import { states } from "../../utils/states"
@@ -31,6 +32,7 @@ const EditPatient = () => {
 	const navigate = useNavigate()
 	const toast = useToast()
 	const { fetchPatients } = useOutletContext()
+	const { user } = useAuthContext()
 
 	const [patient, setPatient] = useState()
 
@@ -78,9 +80,17 @@ const EditPatient = () => {
 	const {} = useQuery({
 		queryKey: ["patient", patientId],
 		queryFn: async () => {
+			if (!user) {
+				throw Error("You must be logged in.")
+			}
+			
 			try {
 				const res = await axios.get(
-					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`
+					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`, {
+						headers: {
+							Authorization: `Bearer ${user.token}`
+						}
+					}
 				)
 				const patient = res.data
 				formik.setValues({
@@ -108,6 +118,10 @@ const EditPatient = () => {
 	// edit patient details
 	const { isPending, mutateAsync } = useMutation({
 		mutationFn: async (values) => {
+			if (!user) {
+				throw Error("You must be logged in.")
+			}
+
 			try {
 				// update patient
 				const data = {
@@ -129,7 +143,11 @@ const EditPatient = () => {
 
 				const res = await axios.patch(
 					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`,
-					data
+					data, {
+						headers: {
+							Authorization: `Bearer ${user.token}`
+						}
+					}
 				)
 				const newPatient = res.data
 				toast({

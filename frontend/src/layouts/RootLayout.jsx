@@ -3,12 +3,14 @@ import { Outlet } from "react-router-dom"
 import axios from "axios"
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { useAuthContext } from "../hooks/useAuthContext"
 
 // components
 import NavBar from "../components/NavBar"
 import Footer from "../components/Footer"
 
 const RootLayout = () => {
+	const { user } = useAuthContext()
 	const toast = useToast()
 	const [searchValue, setSearchValue] = useState("")
 	const [patients, setPatients] = useState([])
@@ -17,13 +19,21 @@ const RootLayout = () => {
 	const { isLoading, refetch: fetchPatients } = useQuery({
 		queryKey: ["patients", searchValue],
 		queryFn: async () => {
+			if (!user) {
+				throw Error("You must be logged in.")
+			}
+			
 			// if value typed in search bar, fetch matching
 			try {
 				if (searchValue) {
 					const res = await axios.get(
 						import.meta.env.VITE_PATIENT_API +
 							"patients/search/query?q=" +
-							searchValue
+							searchValue, {
+								headers: {
+									Authorization: `Bearer ${user.token}`
+								}
+							}
 					)
 					setPatients(res.data)
 					return res.data
@@ -31,7 +41,11 @@ const RootLayout = () => {
 
 				// otherwise fetch all patients
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "patients"
+					import.meta.env.VITE_PATIENT_API + "patients", {
+						headers: {
+							Authorization: `Bearer ${user.token}`
+						}
+					}
 				)
 				setPatients(res.data)
 				return res.data
@@ -63,10 +77,11 @@ const RootLayout = () => {
 					isLoading,
 					patients,
 					searchValue,
+					setPatients,
 					setSearchValue,
 				}}
 			/>
-			<Footer />
+			<Footer setPatients={setPatients} />
 		</VStack>
 	)
 }

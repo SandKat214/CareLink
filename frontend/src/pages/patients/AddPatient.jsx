@@ -16,6 +16,7 @@ import { useFormik } from "formik"
 import * as Yup from "yup"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
+import { useAuthContext } from "../../hooks/useAuthContext"
 
 // utils
 import { states } from "../../utils/states"
@@ -29,6 +30,7 @@ const AddPatient = () => {
 	const navigate = useNavigate()
 	const toast = useToast()
 	const { fetchPatients } = useOutletContext()
+	const { user } = useAuthContext()
 
 	const formik = useFormik({
 		initialValues: {
@@ -73,10 +75,13 @@ const AddPatient = () => {
 	// add patient to db
 	const { isPending, mutateAsync } = useMutation({
 		mutationFn: async (values) => {
+			if (!user) {
+				throw Error("You must be logged in.")
+			}
+
 			try {
 				// create patient
 				const data = {
-					userID: "1",
 					fname: values.fname,
 					lname: values.lname,
 					telephone:
@@ -96,7 +101,11 @@ const AddPatient = () => {
 
 				const res = await axios.post(
 					`${import.meta.env.VITE_PATIENT_API}patients/`,
-					data
+					data, {
+						headers: {
+							Authorization: `Bearer ${user.token}`
+						}
+					}
 				)
 				const newPatient = res.data
 				toast({

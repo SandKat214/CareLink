@@ -12,7 +12,7 @@ import { IoMdLogOut } from "react-icons/io"
 import { useAuthContext } from "../hooks/useAuthContext"
 import { useState } from "react"
 
-const Footer = () => {
+const Footer = ({ setPatients }) => {
 	const toast = useToast()
 	const { user, dispatch } = useAuthContext()
 	const [isPending, setIsPending] = useState(false)
@@ -25,6 +25,9 @@ const Footer = () => {
 
 		// update auth context
 		dispatch({ type: "LOGOUT" })
+
+		// clear patients
+		setPatients([])
 
 		toast({ description: "Logout successful.", status: "success" })
 

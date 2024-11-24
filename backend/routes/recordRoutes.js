@@ -5,8 +5,12 @@ const {
 	deleteRecords,
 	updateRecord,
 } = require("../controllers/recordController")
+const requireAuth = require('../middleware/requireAuth')
 
 const router = express.Router()
+
+// authenticate
+router.use(requireAuth)
 
 // GET all records for a patient
 router.get("/:patientId", getRecords)

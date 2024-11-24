@@ -16,12 +16,14 @@ import { useFormik } from "formik"
 import * as Yup from "yup"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
+import { useAuthContext } from "../../hooks/useAuthContext"
 
 // icons
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons"
 
 const AddAppt = () => {
-	const { fetchAppts, patients, focusDate, year, month } = useOutletContext()
+	const { fetchAppts, fetchPatients, patients, setPatients, focusDate, year, month } = useOutletContext()
+	const { user } = useAuthContext()
 	const navigate = useNavigate()
 	const toast = useToast()
 
@@ -44,17 +46,25 @@ const AddAppt = () => {
 	// add appointment event
 	const { isPending, mutateAsync } = useMutation({
 		mutationFn: async (values) => {
+			if (!user) {
+				throw Error("You must be logged in.")
+			}
+			
 			try {
 				// get patient info
 				const patient = await axios.get(
 					import.meta.env.VITE_PATIENT_API +
 						"patients/" +
-						values.patient
+						values.patient, {
+							headers: {
+								Authorization: `Bearer ${user.token}`
+							}
+						}
 				)
 
 				// create event
 				const data = {
-					userID: "1",
+					userID: user.id,
 					attendees: [values.patient],
 					startEvent: new Date(
 						year,

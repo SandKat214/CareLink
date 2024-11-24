@@ -1,4 +1,5 @@
 import { createContext, useEffect, useReducer } from "react"
+import axios from "axios"
 
 export const AuthContext = createContext()
 
@@ -18,11 +19,35 @@ export const AuthContextProvider = ({ children }) => {
 		user: null,
 	})
 
+	const verifyUser = async (user) => {
+		try {
+			const res = await axios.get(`${import.meta.env.VITE_AUTHS_API}verify/`, {
+				headers: {
+					Authorization: `Bearer ${user.token}`
+				}
+			})
+			console.log('User token verified.')
+			return res.data
+		} catch (error) {
+			console.log('Token expired or unauthorized.')
+			return null
+		}
+	}
+
 	useEffect(() => {
 		const user = JSON.parse(localStorage.getItem('user'))
 
 		if (user) {
-			dispatch({ type: 'LOGIN', payload: user })
+			const verify = async () => {
+				const verified = await verifyUser(user)
+				if (verified) {
+					dispatch({ type: 'LOGIN', payload: user })
+				} else {
+					localStorage.removeItem('user')
+					dispatch({ type: 'LOGOUT'})
+				}
+			}
+			verify()
 		}
 	}, [])
 

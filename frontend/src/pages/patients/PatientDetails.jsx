@@ -27,6 +27,7 @@ import {
 import axios from "axios"
 import { useRef, useState } from "react"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { useAuthContext } from "../../hooks/useAuthContext"
 
 // components
 import AlertModal from "../../components/AlertModal"
@@ -40,6 +41,7 @@ import { ArrowBackIcon } from "@chakra-ui/icons"
 const PatientDetails = () => {
 	const { patientId } = useParams()
 	const { fetchPatients } = useOutletContext()
+	const { user } = useAuthContext()
 	const navigate = useNavigate()
 	const { isOpen, onClose, onOpen } = useDisclosure()
 	const toast = useToast()
@@ -53,9 +55,17 @@ const PatientDetails = () => {
 	const { isFetching: loadingPatient, refetch: fetchPatient } = useQuery({
 		queryKey: ["patient", patientId],
 		queryFn: async () => {
+			if (!user) {
+				throw Error("You must be logged in.")
+			}
+
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "patients/" + patientId
+					import.meta.env.VITE_PATIENT_API + "patients/" + patientId, {
+						headers: {
+							Authorization: `Bearer ${user.token}`
+						}
+					}
 				)
 				setPatient(res.data)
 				return res.data
@@ -64,7 +74,7 @@ const PatientDetails = () => {
 				throw new Error("Could not find patient with that id.")
 			}
 		},
-		retry: 0,
+		retry: 1,
 		throwOnError: true,
 	})
 
@@ -72,9 +82,17 @@ const PatientDetails = () => {
 	const { isLoading: loadingRecords, refetch: fetchRecords } = useQuery({
 		queryKey: ["records", patientId],
 		queryFn: async () => {
+			if (!user) {
+				throw Error("You must be logged in.")
+			}
+
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "records/" + patientId
+					import.meta.env.VITE_PATIENT_API + "records/" + patientId, {
+						headers: {
+							Authorization: `Bearer ${user.token}`
+						}
+					}
 				)
 				setRecords(res.data)
 				return res.data
@@ -96,16 +114,28 @@ const PatientDetails = () => {
 	const { isPending: pendingDelete, mutateAsync: deletePatient } =
 		useMutation({
 			mutationFn: async () => {
+				if (!user) {
+					throw Error("You must be logged in.")
+				}
+
 				try {
 					await axios.delete(
 						`${
 							import.meta.env.VITE_PATIENT_API
-						}patients/${patientId}`
+						}patients/${patientId}`, {
+							headers: {
+								Authorization: `Bearer ${user.token}`
+							}
+						}
 					)
 					await axios.delete(
 						`${
 							import.meta.env.VITE_PATIENT_API
-						}records/${patientId}`
+						}records/${patientId}`, {
+							headers: {
+								Authorization: `Bearer ${user.token}`
+							}
+						}
 					)
 					toast({
 						description: "Patient successfully deleted.",
@@ -129,6 +159,10 @@ const PatientDetails = () => {
 	// image microservice
 	const { isPending: pendingURL, mutateAsync: imageUpload } = useMutation({
 		mutationFn: async () => {
+			if (!user) {
+				throw Error("You must be logged in.")
+			}
+			
 			try {
 				const data = new FormData()
 				data.append("file", file)
@@ -143,7 +177,11 @@ const PatientDetails = () => {
 				// add url to patient information in database
 				await axios.patch(
 					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`,
-					{ image: imageRes.data }
+					{ image: imageRes.data }, {
+						headers: {
+							Authorization: `Bearer ${user.token}`
+						}
+					}
 				)
 				fetchPatient()
 				toast({

@@ -6,41 +6,61 @@ import { useAuthContext } from "../hooks/useAuthContext"
 // icons
 import { MdGroups } from "react-icons/md"
 import { IoHome } from "react-icons/io5"
-import { CalendarIcon } from "@chakra-ui/icons"
+import { CalendarIcon, CheckIcon } from "@chakra-ui/icons"
+import { IoMdLogIn } from "react-icons/io"
 
 const NavLinks = () => {
+	const { user } = useAuthContext()
+
 	return (
 		<Flex w='fit-content' h='fit-content' gap='20px'>
-			<Link as={NavLink} to='/' variant='global'>
-				<HStack gap={2}>
-					<Icon as={IoHome} boxSize={4} />
-					<Text as='span'>Home</Text>
-				</HStack>
-			</Link>
-			<Link as={NavLink} to='patients' variant='global'>
-				<HStack gap={2}>
-					<Icon as={MdGroups} boxSize={6} />
-					<Text as='span'>Patients</Text>
-				</HStack>
-			</Link>
-			<Link as={NavLink} to='appointments' variant='global'>
-				<HStack gap={2}>
-					<Icon as={CalendarIcon} boxSize={3.5} />
-					<Text as='span'>Appointments</Text>
-				</HStack>
-			</Link>
+			{user ?
+				<>
+					<Link as={NavLink} to='/' variant='global'>
+						<HStack gap={2}>
+							<Icon as={IoHome} boxSize={4} />
+							<Text as='span'>Home</Text>
+						</HStack>
+					</Link>
+					<Link as={NavLink} to='patients' variant='global'>
+						<HStack gap={2}>
+							<Icon as={MdGroups} boxSize={6} />
+							<Text as='span'>Patients</Text>
+						</HStack>
+					</Link>
+					<Link as={NavLink} to='appointments' variant='global'>
+						<HStack gap={2}>
+							<Icon as={CalendarIcon} boxSize={3.5} />
+							<Text as='span'>Appointments</Text>
+						</HStack>
+					</Link>
+				</>
+			:
+				<>
+					<Link as={NavLink} to='login' variant='global'>
+						<HStack gap={2}>
+							<Icon as={IoMdLogIn} boxSize={4} />
+							<Text as='span'>Login</Text>
+						</HStack>
+					</Link>
+					<Link as={NavLink} to='signup' variant='global'>
+						<HStack gap={2}>
+							<Icon as={CheckIcon} boxSize={3.5} />
+							<Text as='span'>Signup</Text>
+						</HStack>
+					</Link>
+				</>
+			}
 		</Flex>
 	)
 }
 
 const NavBar = () => {
-	const { user } = useAuthContext()
-
 	return (
 		<Flex
 			as='header'
 			w='100%'
-			justify={user ? "space-between" : "left"}
+			justify="space-between"
 			align='end'
 			gap='40px'
 			p='40px 60px'
@@ -60,7 +80,7 @@ const NavBar = () => {
 				</Text>
 				nk
 			</Heading>
-			{user && <NavLinks />}
+			<NavLinks />
 		</Flex>
 	)
 }

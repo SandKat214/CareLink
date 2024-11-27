@@ -34,7 +34,7 @@ const Footer = ({ setPatients }) => {
 		<Flex
 			as='footer'
 			w='100%'
-			p='40px 60px'
+			p={user ? '30px 60px' : '40px 60px'}
 			justify={user ? "space-between" : "right"}
 			bg='dkNavy'
 			align='center'

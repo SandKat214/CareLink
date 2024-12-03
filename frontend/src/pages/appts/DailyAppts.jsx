@@ -91,7 +91,7 @@ const DailyAppts = () => {
 				const data = {
 					fromName: user.name,
 					toName: apptToRem.title,
-					replyEmail: "user@carelink.site",
+					replyEmail: user.email,
 					toEmail: apptToRem.email,
 					subject: "Appointment reminder from CareLink",
 					message: `This is a reminder that you have an appointment on ${date}, from ${startTime} to ${endTime}.`,

@@ -343,7 +343,7 @@ const PatientDetails = () => {
 						gap='30px'
 						px='15px'
 					>
-						<Flex as='article' p='0 40px' gap='90px'>
+						<Flex as='article' p='0 40px' gap='80px'>
 							<Tooltip
 								hasArrow
 								label={
@@ -374,7 +374,7 @@ const PatientDetails = () => {
 									) : (
 										<>
 											<Image
-												boxSize='230px'
+												boxSize='200px'
 												borderRadius='md'
 												border='4px solid #0F737E'
 												objectFit='cover'
@@ -385,10 +385,10 @@ const PatientDetails = () => {
 												}
 											/>
 											<Center
-												boxSize='230px'
+												boxSize='200px'
 												borderRadius='md'
 												position='relative'
-												top='-230px'
+												top='-200px'
 												left='0'
 												bg='rgba(0,0,0,0.5)'
 												justify='right'

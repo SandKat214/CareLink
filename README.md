@@ -35,7 +35,7 @@ This project was developed in collaboration with a teammate during which they bu
 
 ### Technologies Used
 - **Backend:** Node.js, Express
-- **Frontend:** JavaScript, React, Vite, Chakra UI
+- **Frontend:** JavaScript, React, Chakra UI
 - **Database:** MongoDB (for storing patients, session data, appointments, and users)
 - **Authentication:** JWT (JSON Web Token)
 - **Email Notifications:** EmailJS

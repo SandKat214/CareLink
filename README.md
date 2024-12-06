@@ -24,7 +24,7 @@ This project is organized into multiple microservices, each responsible for a sp
 5. **Notification Microservice:** Sends email notifications; addressee, sender name, subject, message, and reply-to are all customizable.  
 [Notification Microservice Repo](https://github.com/SandKat214/Notification_Microservice)
 
-7. **Image Microservice:** Stores and retrieves image via protected URL, ensuring they are securely managed.  
+7. **Image Microservice:** Stores and retrieves images via protected URL, ensuring they are securely managed.  
 [Image Microservice Repo](https://github.com/SandKat214/Image_Microservice)
 
 ## Development & Collaboration

@@ -15,10 +15,16 @@ This is a patient management application designed specifically for counseling pr
 ## Project Structure
 This project is organized into multiple microservices, each responsible for a specific set of functionalities. Here’s a high-level overview:
 
-1. **Authentication Microservice:** Handles secure user login, authentication, and user data protection. [Auth Microservice Repo](https://github.com/SandKat214/Auth_Microservice)
+1. **Authentication Microservice:** Handles secure user login, authentication, and user data protection.  
+[Auth Microservice Repo](https://github.com/SandKat214/Auth_Microservice)
+
 3. **Event Microservice:** Manages appointments.
-4. **Notification Microservice:** Sends email reminder related to appointments. [Notification Microservice Repo](https://github.com/SandKat214/Notification_Microservice)
-5. **Image Microservice:** Stores and retrieves patient-related image, ensuring they are securely managed. [Image Microservice Repo](https://github.com/SandKat214/Image_Microservice)
+   
+5. **Notification Microservice:** Sends email reminder related to appointments.  
+[Notification Microservice Repo](https://github.com/SandKat214/Notification_Microservice)
+
+7. **Image Microservice:** Stores and retrieves patient-related image, ensuring they are securely managed.  
+[Image Microservice Repo](https://github.com/SandKat214/Image_Microservice)
 
 ## Development & Collaboration
 This project was developed in collaboration with a teammate in that they built one of the microservices for me and I built one for their project. We followed agile practices to ensure effective communication and development. I built and optimize the Main UI frontend and backend (this repo), as well as the Authentication, Notification, and Image microservices (links provided above) for this application. Me teammate built the Event microservice

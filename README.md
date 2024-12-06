@@ -27,7 +27,7 @@ This project is organized into multiple microservices, each responsible for a sp
 [Image Microservice Repo](https://github.com/SandKat214/Image_Microservice)
 
 ## Development & Collaboration
-This project was developed in collaboration with a teammate in that they built one of the microservices for me and I built one for their project. We followed agile practices to ensure effective communication and development. I built and optimize the Main UI frontend and backend (this repo), as well as the Authentication, Notification, and Image microservices (links provided above) for this application. Me teammate built the Event microservice
+This project was developed in collaboration with a teammate during which they built one of the microservices for this project and I built one for their project. We followed agile practices to ensure effective communication and development. I built and optimized the Main UI frontend and backend (this repo), as well as the Authentication, Notification, and Image microservices (links provided above), while my teammate built the Event microservice.
 
 ### Technologies Used
 - **Backend:** Node.js, Express

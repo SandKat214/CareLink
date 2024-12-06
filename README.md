@@ -1,5 +1,5 @@
 # CareLink
-## Patient Management Application for Counseling Professionals
+### A Patient Management Application for Counseling Professionals
 This is a patient management application designed specifically for counseling professionals to securely store and manage patient information, appointments, and history from previous sessions. The application integrates multiple microservices to enhance modularity, scalability, and maintainability, making it a comprehensive solution for managing patient interactions.
 
 ## Features

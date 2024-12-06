@@ -9,7 +9,7 @@ This is a patient management application designed specifically for counseling pr
 - **Microservices Architecture:** The application utilizes several independent microservices to handle different functionalities, ensuring modular development and easy scalability.
     * **Login Authentication:** Secure login and authentication mechanisms to ensure data privacy and patient confidentiality.  
     * **Event Management:** Efficiently store, delete, and retrieve events within a date range. 
-    * **Email Notifications:** Send automated email notifications.  
+    * **Email Notifications:** Send custom email notifications.  
     * **Image Storage:** Safely store and manage patient-related images.  
 
 ## Project Structure

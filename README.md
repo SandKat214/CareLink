@@ -18,7 +18,8 @@ This project is organized into multiple microservices, each responsible for a sp
 1. **Authentication Microservice:** Handles secure user login, authentication, and user data protection.  
 [Auth Microservice Repo](https://github.com/SandKat214/Auth_Microservice)
 
-3. **Event Microservice:** Manages appointments.
+3. **Event Microservice:** Manages appointments.  
+[Event Microservice Repo](https://github.com/vmkiss/cs361-microservice-a)
    
 5. **Notification Microservice:** Sends email reminder related to appointments.  
 [Notification Microservice Repo](https://github.com/SandKat214/Notification_Microservice)
@@ -27,7 +28,10 @@ This project is organized into multiple microservices, each responsible for a sp
 [Image Microservice Repo](https://github.com/SandKat214/Image_Microservice)
 
 ## Development & Collaboration
-This project was developed in collaboration with a teammate during which they built one of the microservices for this project and I built one for their project. We followed agile practices to ensure effective communication and development. I built and optimized the Main UI frontend and backend (this repo), as well as the Authentication, Notification, and Image microservices (links provided above), while my teammate built the Event microservice.
+This project was developed in collaboration with a teammate during which they built one of the microservices for this project and I built one for their project. We followed agile practices to ensure effective communication and development. I built and optimized the Main UI frontend and backend (this repo), as well as the Authentication, Notification, and Image microservices. My teammate built the Event microservice. Links to the microservice repos are provided above.
+
+### Collaborators
+- [vmkiss](https://github.com/vmkiss)
 
 ### Technologies Used
 - **Backend:** Node.js, Express

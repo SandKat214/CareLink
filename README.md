@@ -31,5 +31,7 @@ This project was developed in collaboration with a teammate in that they built o
 - **Image Storage:** Cloudinary
 - **Version Control:** Git (GitHub)
 
-## Video
-[![Watch the overview](https://github.com/SandKat214/CareLink/blob/main/video-readme/carelink.png?raw=true)](https://github.com/SandKat214/CareLink/blob/main/video-readme/carelink.mp4?raw=true)
+
+## Preview
+https://github.com/user-attachments/assets/e61f3711-b941-46dc-84fd-320bd71f3fc9
+

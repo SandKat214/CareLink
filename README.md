@@ -8,8 +8,8 @@ This is a patient management application designed specifically for counseling pr
 - **History Tracking:** Keep track of past sessions to monitor patient progress and follow-up requirements.
 - **Microservices Architecture:** The application utilizes several independent microservices to handle different functionalities, ensuring modular development and easy scalability.
     * **Login Authentication:** Secure login and authentication mechanisms to ensure data privacy and patient confidentiality.  
-    * **Event Management:** Efficiently store, delete, and retrieve events within a date range. 
-    * **Email Notifications:** Send custom email notifications.  
+    * **Event Management:** Efficiently store, delete, and retrieve appointments. 
+    * **Email Notifications:** Send appointment reminder notifications to patients.  
     * **Image Storage:** Safely store and manage patient-related images.  
 
 ## Project Structure
@@ -18,13 +18,13 @@ This project is organized into multiple microservices, each responsible for a sp
 1. **Authentication Microservice:** Handles secure user login, authentication, and user data protection.  
 [Auth Microservice Repo](https://github.com/SandKat214/Auth_Microservice)
 
-3. **Event Microservice:** Manages appointments.  
+3. **Event Microservice:** Manages event creation, event deletion, and retrieval of stored events within a customized date range.  
 [Event Microservice Repo](https://github.com/vmkiss/cs361-microservice-a)
    
-5. **Notification Microservice:** Sends email reminder related to appointments.  
+5. **Notification Microservice:** Sends email notifications; addressee, sender name, subject, message, and reply-to are all customizable.  
 [Notification Microservice Repo](https://github.com/SandKat214/Notification_Microservice)
 
-7. **Image Microservice:** Stores and retrieves patient-related images, ensuring they are securely managed.  
+7. **Image Microservice:** Stores and retrieves image via protected URL, ensuring they are securely managed.  
 [Image Microservice Repo](https://github.com/SandKat214/Image_Microservice)
 
 ## Development & Collaboration

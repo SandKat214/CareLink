@@ -212,7 +212,7 @@ const PatientDetails = () => {
 
 				// upload image for url
 				const imageRes = await axios.post(
-					`${import.meta.env.VITE_IMAGES_API}`,
+					`${import.meta.env.VITE_PATIENT_API}upload/`,
 					data
 				)
 

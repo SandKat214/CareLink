@@ -6,6 +6,7 @@ const mongoose = require("mongoose")
 const patientRoutes = require("./routes/patientRoutes")
 const recordRoutes = require("./routes/recordRoutes")
 const userRoutes = require("./routes/userRoutes")
+const imageRoutes = require("./routes/imageRoutes")
 
 // express app
 const app = express()
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 app.use("/api/patients/", patientRoutes)
 app.use("/api/records/", recordRoutes)
 app.use("/api/auth/", userRoutes)
+app.use("/api/upload/", imageRoutes)
 
 // connect to db
 mongoose

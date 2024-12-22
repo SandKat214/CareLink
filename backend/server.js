@@ -16,7 +16,7 @@ const app = express()
 const PORT = process.env.PORT
 
 // middleware
-app.use(cors({ credentials: true, origin: ["http://localhost:4000"] }))
+app.use(cors({ credentials: true, origin: [process.env.FRONTEND_URL] }))
 app.use(express.json())
 app.use((req, res, next) => {
 	console.log(req.path, req.method)

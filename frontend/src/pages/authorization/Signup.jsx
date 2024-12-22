@@ -58,7 +58,7 @@ const Signup = () => {
 					password: values.password,
 				}
 				const res = await axios.post(
-					`${import.meta.env.VITE_AUTHS_API}signup/`,
+					`${import.meta.env.VITE_PATIENT_API}auth/signup/`,
 					data
 				)
 				const newUser = res.data

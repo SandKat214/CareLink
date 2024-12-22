@@ -89,7 +89,7 @@ const PatientRecord = () => {
 
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "patients/" + patientId,
+					import.meta.env.VITE_API + "patients/" + patientId,
 					{
 						headers: {
 							Authorization: `Bearer ${user.token}`,
@@ -130,7 +130,7 @@ const PatientRecord = () => {
 
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "records/" + patientId,
+					import.meta.env.VITE_API + "records/" + patientId,
 					{
 						headers: {
 							Authorization: `Bearer ${user.token}`,
@@ -173,7 +173,7 @@ const PatientRecord = () => {
 						notes: values.notes,
 					}
 					await axios.patch(
-						`${import.meta.env.VITE_PATIENT_API}records/${
+						`${import.meta.env.VITE_API}records/${
 							values.id
 						}`,
 						data,
@@ -191,7 +191,7 @@ const PatientRecord = () => {
 						notes: values.notes,
 					}
 					await axios.post(
-						`${import.meta.env.VITE_PATIENT_API}records/`,
+						`${import.meta.env.VITE_API}records/`,
 						data,
 						{
 							headers: {

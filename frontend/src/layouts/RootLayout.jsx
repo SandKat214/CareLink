@@ -29,7 +29,7 @@ const RootLayout = () => {
 			try {
 				if (searchValue) {
 					const res = await axios.get(
-						import.meta.env.VITE_PATIENT_API +
+						import.meta.env.VITE_API +
 							"patients/search/query?q=" +
 							searchValue,
 						{
@@ -44,7 +44,7 @@ const RootLayout = () => {
 
 				// otherwise fetch all patients
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "patients",
+					import.meta.env.VITE_API + "patients",
 					{
 						headers: {
 							Authorization: `Bearer ${user.token}`,

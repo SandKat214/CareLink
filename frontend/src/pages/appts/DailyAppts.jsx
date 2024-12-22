@@ -49,7 +49,7 @@ const DailyAppts = () => {
 		mutationFn: async () => {
 			try {
 				await axios.delete(
-					`${import.meta.env.VITE_PATIENT_API}events/${idToCancel}`
+					`${import.meta.env.VITE_API}events/${idToCancel}`
 				)
 				toast({
 					description: "Appointment cancelled.",
@@ -96,7 +96,7 @@ const DailyAppts = () => {
 					subject: "Appointment reminder from CareLink",
 					message: `This is a reminder that you have an appointment on ${date}, from ${startTime} to ${endTime}.`,
 				}
-				await axios.post(`${import.meta.env.VITE_NOTIFY_API}`, data)
+				await axios.post(`${import.meta.env.VITE_API}notify/`, data)
 				toast({ description: "Reminder sent.", status: "success" })
 			} catch (error) {
 				console.log(error)

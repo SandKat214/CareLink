@@ -89,7 +89,7 @@ const EditPatient = () => {
 
 			try {
 				const res = await axios.get(
-					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`,
+					`${import.meta.env.VITE_API}patients/${patientId}`,
 					{
 						headers: {
 							Authorization: `Bearer ${user.token}`,
@@ -159,7 +159,7 @@ const EditPatient = () => {
 				}
 
 				const res = await axios.patch(
-					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`,
+					`${import.meta.env.VITE_API}patients/${patientId}`,
 					data,
 					{
 						headers: {

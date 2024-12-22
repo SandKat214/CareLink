@@ -57,7 +57,7 @@ const AddAppt = () => {
 			try {
 				// get patient info
 				const patient = await axios.get(
-					import.meta.env.VITE_PATIENT_API +
+					import.meta.env.VITE_API +
 						"patients/" +
 						values.patient,
 					{
@@ -88,7 +88,7 @@ const AddAppt = () => {
 					title: `${patient.data.fname} ${patient.data.lname}`,
 				}
 				const res = await axios.post(
-					`${import.meta.env.VITE_PATIENT_API}events/`,
+					`${import.meta.env.VITE_API}events/`,
 					data
 				)
 				const newAppt = res.data

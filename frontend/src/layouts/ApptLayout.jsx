@@ -71,7 +71,7 @@ const ApptLayout = () => {
 		}
 		try {
 			const res = await axios.get(
-				import.meta.env.VITE_PATIENT_API + "patients/" + patientId,
+				import.meta.env.VITE_API + "patients/" + patientId,
 				{
 					headers: {
 						Authorization: `Bearer ${user.token}`,
@@ -201,7 +201,7 @@ const ApptLayout = () => {
 			// fetch set month's appointments
 			try {
 				const res = await axios.get(
-					`${import.meta.env.VITE_PATIENT_API}events/${user.id}/dates?start=${fromYear}-${fromMonth}-01&end=${toYear}-${toMonth}-02`
+					`${import.meta.env.VITE_API}events/${user.id}/dates?start=${fromYear}-${fromMonth}-01&end=${toYear}-${toMonth}-02`
 				)
 				buildAppts(res.data)
 				return res.data

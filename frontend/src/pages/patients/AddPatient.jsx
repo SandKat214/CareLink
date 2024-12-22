@@ -103,7 +103,7 @@ const AddPatient = () => {
 				}
 
 				const res = await axios.post(
-					`${import.meta.env.VITE_PATIENT_API}patients/`,
+					`${import.meta.env.VITE_API}patients/`,
 					data,
 					{
 						headers: {

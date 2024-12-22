@@ -63,7 +63,7 @@ const PatientDetails = () => {
 
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "patients/" + patientId,
+					import.meta.env.VITE_API + "patients/" + patientId,
 					{
 						headers: {
 							Authorization: `Bearer ${user.token}`,
@@ -104,7 +104,7 @@ const PatientDetails = () => {
 
 			try {
 				const res = await axios.get(
-					import.meta.env.VITE_PATIENT_API + "records/" + patientId,
+					import.meta.env.VITE_API + "records/" + patientId,
 					{
 						headers: {
 							Authorization: `Bearer ${user.token}`,
@@ -148,7 +148,7 @@ const PatientDetails = () => {
 				try {
 					await axios.delete(
 						`${
-							import.meta.env.VITE_PATIENT_API
+							import.meta.env.VITE_API
 						}patients/${patientId}`,
 						{
 							headers: {
@@ -158,7 +158,7 @@ const PatientDetails = () => {
 					)
 					await axios.delete(
 						`${
-							import.meta.env.VITE_PATIENT_API
+							import.meta.env.VITE_API
 						}records/${patientId}`,
 						{
 							headers: {
@@ -212,13 +212,13 @@ const PatientDetails = () => {
 
 				// upload image for url
 				const imageRes = await axios.post(
-					`${import.meta.env.VITE_PATIENT_API}upload/`,
+					`${import.meta.env.VITE_API}upload/`,
 					data
 				)
 
 				// add url to patient information in database
 				await axios.patch(
-					`${import.meta.env.VITE_PATIENT_API}patients/${patientId}`,
+					`${import.meta.env.VITE_API}patients/${patientId}`,
 					{ image: imageRes.data },
 					{
 						headers: {

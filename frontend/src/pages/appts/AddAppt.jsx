@@ -88,7 +88,7 @@ const AddAppt = () => {
 					title: `${patient.data.fname} ${patient.data.lname}`,
 				}
 				const res = await axios.post(
-					`${import.meta.env.VITE_EVENTS_API}`,
+					`${import.meta.env.VITE_PATIENT_API}events/`,
 					data
 				)
 				const newAppt = res.data

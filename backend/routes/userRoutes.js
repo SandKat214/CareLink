@@ -6,9 +6,6 @@ const {
 
 const router = express.Router()
 
-// // Verify a user
-// router.get("/verify", verifyUser)
-
 // Log in a user
 router.post("/login", loginUser)
 

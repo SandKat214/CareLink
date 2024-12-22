@@ -49,7 +49,7 @@ const DailyAppts = () => {
 		mutationFn: async () => {
 			try {
 				await axios.delete(
-					`${import.meta.env.VITE_EVENTS_API}/${idToCancel}`
+					`${import.meta.env.VITE_PATIENT_API}events/${idToCancel}`
 				)
 				toast({
 					description: "Appointment cancelled.",

@@ -67,8 +67,9 @@ const Footer = ({ setPatients }) => {
 					</Button>
 				</Flex>
 			)}
-			<Text color='background' fontSize='12px' fontStyle='italic'>
+			<Text color='background' fontSize='12px' fontStyle='italic' align='right' >
 				&copy; 2024 Katherine Sandeen
+				<Text>For demonstration purposes only...</Text>
 			</Text>
 		</Flex>
 	)

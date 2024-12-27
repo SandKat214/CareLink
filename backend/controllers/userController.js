@@ -14,13 +14,13 @@ const loginUser = async (req, res) => {
 
 	try {
 		// find user
-		const user = await User.login(email, password)
+		const user = await User.login(email.toLowerCase(), password)
 
 		// create token
 		const token = createToken(user._id)
 
 		console.log(`Verified user: ${user.name}`)
-		res.status(200).json({ id: user._id, email, name: user.name, token })
+		res.status(200).json({ id: user._id, email: user.email, name: user.name, token })
 	} catch (error) {
 		console.log(error.message)
 		res.status(400).json({ error: error.message })
@@ -33,13 +33,13 @@ const signupUser = async (req, res) => {
 
 	try {
 		// save to db
-		const user = await User.signup(email, password, name)
+		const user = await User.signup(email.toLowerCase(), password, name)
 
 		// create token
 		const token = createToken(user._id)
 
 		console.log(`User created: ${user.name}`)
-		res.status(200).json({ id: user._id, email, name, token })
+		res.status(200).json({ id: user._id, email: user.email, name, token })
 	} catch (error) {
 		console.log(error.message)
 		res.status(400).json({ error: error.message })

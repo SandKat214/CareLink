@@ -46,3 +46,6 @@ This project was developed in collaboration with a teammate during which they bu
 ## Preview
 https://github.com/user-attachments/assets/e61f3711-b941-46dc-84fd-320bd71f3fc9
 
+### Demo Deployment
+- [carelink.ksandeen.com](https://carelink.ksandeen.com)
+

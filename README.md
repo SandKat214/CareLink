@@ -42,6 +42,8 @@ This project was developed in collaboration with a teammate during which they bu
 - **Image Storage:** Cloudinary
 - **Version Control:** Git (GitHub)
 
+## Planned Improvements
+The website is not yet fully optimized for mobile and tablet devices. Work is ongoing to improve responsiveness for these layouts in upcoming releases.
 
 ## Preview
 https://github.com/user-attachments/assets/e61f3711-b941-46dc-84fd-320bd71f3fc9

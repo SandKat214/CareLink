@@ -34,5 +34,8 @@ The project follows the MVC structure, with separate components responsible for 
 - **Image Storage:** Cloudinary
 - **Version Control:** Git (GitHub)
 
+## Planned Improvements
+The website is not yet fully optimized for mobile and tablet devices. Work is ongoing to improve responsiveness for these layouts in upcoming releases.
+
 ## Demo
 **Deployment:** [carelink.ksandeen.com](https://carelink.ksandeen.com)
